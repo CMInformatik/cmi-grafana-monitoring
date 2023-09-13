@@ -1,0 +1,36 @@
+name: Format on slash command
+on:
+  issue_comment:
+    types: [created]
+jobs:
+  dotnet-format:
+    if: contains(github.event.comment.body, '/format')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get branch info
+        id: comment-branch
+        uses: xt0rted/pull-request-comment-branch@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ steps.comment-branch.outputs.ref }}
+          persist-credentials: false
+
+      - name: Apply all codeStyle of high severity
+        id: format
+        run: |
+          mapfile -t changedfiles < <(gh pr view $PR --json files -q '.files[].path' --repo $GITHUB_REPOSITORY)
+          dotnet format "$(find . -name *.sln | head -n1)" --verbosity diag --severity error --include ${changedfiles[@]}
+          ( [[ $(git diff --stat) != '' ]] && echo "hasChanges=true" >> "$GITHUB_OUTPUT") || echo 🙄
+
+      - name: Commit & Push changes
+        if: steps.format.outputs.hasChanges == 'true'
+        uses: actions-js/push@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ steps.comment-branch.outputs.head_ref }}
+          message: Autoformat

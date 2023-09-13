@@ -1,0 +1,12 @@
+name: YouTrack "Gelöst in Version" setzen
+
+on:
+  push:
+    branches: 
+      - 'release/**'
+
+jobs:
+  yt:
+    uses: CMInformatik/.github/.github/workflows/add-version-youtrack.yml@master
+    secrets:
+      YOUTRACK_AUTH_TOKEN: ${{ secrets.YOUTRACK_AUTH_TOKEN }} 
