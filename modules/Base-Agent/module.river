@@ -14,9 +14,9 @@ export "logs_receiver" {
   value = loki.process.add_default_labels
 }
 
-export "traces_receiver" {
-  value = otelcol.exporter.otlp.default.input
-}
+// export "traces_receiver" {
+//   value = otelcol.exporter.otlp.default.input
+// }
 
 loki.process "add_default_labels" {
   forward_to = [
@@ -32,7 +32,7 @@ loki.process "add_default_labels" {
   }
 
   stage.labels {
-      values = { "cloud-environment" = argument.environment }
+      values = { "cloud-environment" = argument.environment.value }
   }
 }
 
@@ -43,7 +43,7 @@ prometheus.relabel "add_default_labels" {
   }
   rule {
     target_label = ["cloud-environment"]
-    replacement = argument.environment
+    replacement = argument.environment.value
   }
   forward_to = [
     module.git.grafana_cloud.exports.metrics_receiver,
