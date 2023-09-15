@@ -3,11 +3,11 @@ argument "token" {}
 argument "environment" {}
 
 export "metrics_receiver" {
-  value = prometheus.relabel.add_default_labels
+  value = prometheus.relabel.add_default_labels.receiver
 }
 
 export "logs_receiver" {
-  value = loki.process.default_processing
+  value = loki.process.default_processing.receiver
 }
 
 // export "traces_receiver" {
@@ -16,7 +16,7 @@ export "logs_receiver" {
 
 loki.process "default_processing" {
   forward_to = [
-    loki.relabel.add_default_lables,
+    loki.relabel.add_default_lables.receiver,
   ]
 
   stage.json {
