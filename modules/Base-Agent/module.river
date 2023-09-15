@@ -33,7 +33,7 @@ loki.relabel "add_default_lables" {
     module.git.grafana_cloud.exports.logs_receiver,
   ]
   rule {
-    target_label = "cloud-environment"
+    target_label = "cloud_environment"
     replacement = argument.environment.value
   }
 
@@ -45,7 +45,7 @@ prometheus.relabel "add_default_labels" {
     target_label  = "agent_hostname"
   }
   rule {
-    target_label = "cloud-environment"
+    target_label = "cloud_environment"
     replacement = argument.environment.value
   }
   forward_to = [
