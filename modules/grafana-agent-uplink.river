@@ -18,7 +18,6 @@ loki.process "default_processing" {
   forward_to = [
     loki.relabel.add_default_lables.receiver,
   ]
-
   stage.json {
       expressions = { "extracted_source" = "source" }
   }
