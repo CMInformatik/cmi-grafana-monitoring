@@ -7,7 +7,7 @@ export "metrics_receiver" {
 }
 
 export "logs_receiver" {
-  value = loki.process.add_default_labels
+  value = loki.process.default_processing
 }
 
 // export "traces_receiver" {
