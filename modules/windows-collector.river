@@ -5,7 +5,7 @@ argument "windows_metrics_destination" {}
 argument "windows_scrape_targets" {}
 
 prometheus.scrape "windows_node" {
-  targets = prometheus.exporter.windows.default.targets
+  targets = argument.windows_scrape_targets.value
   forward_to = [
     argument.windows_metrics_destination.value,
   ]
