@@ -38,7 +38,7 @@ prometheus.relabel "add_default_labels" {
     target_label  = "agent_hostname"
   }
   rule {
-    target_label = ["cloud-environment"]
+    target_label = "cloud-environment"
     replacement = argument.environment.value
   }
   forward_to = [
