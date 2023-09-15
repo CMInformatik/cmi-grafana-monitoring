@@ -2,7 +2,7 @@ argument "token" {}
 
 argument "environment" {}
 
-arguemnt "stack_name" {
+argument "stack_name" {
   default = "cminformatikt"
 }
 
