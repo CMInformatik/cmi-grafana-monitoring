@@ -7,7 +7,21 @@ argument "windows_scrape_targets" {}
 prometheus.scrape "windows_node" {
   targets = argument.windows_scrape_targets.value
   forward_to = [
-    argument.windows_metrics_destination.value,
+    prometheus.relabel.windows_add_job.receiver,
   ]
   metrics_path    = "/metrics"
+}
+
+prometheus.relabel "windows_add_job" {
+  rule {
+    target_label = "job"
+    replacement = "integrations/windows_exporter"
+  }
+  rule {
+    source_labels = ["instance"]
+    target_label  = "agent_hostname"
+  }
+  forward_to = [
+    argument.windows_metrics_destination.value,
+  ]
 }

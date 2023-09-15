@@ -40,10 +40,6 @@ loki.relabel "add_default_lables" {
 
 prometheus.relabel "add_default_labels" {
   rule {
-    source_labels = ["instance"]
-    target_label  = "agent_hostname"
-  }
-  rule {
     target_label = "cloud_environment"
     replacement = argument.environment.value
   }
