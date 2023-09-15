@@ -1,0 +1,62 @@
+argument "token" {
+    type = string
+}
+
+argument "environment" {
+    type = string
+}
+
+export "metrics_receiver" {
+  value = prometheus.relabel.add_default_labels
+}
+
+export "logs_receiver" {
+  value = loki.process.add_default_labels
+}
+
+export "traces_receiver" {
+  value = otelcol.exporter.otlp.default.input
+}
+
+loki.process "add_default_labels" {
+  forward_to = [
+    module.git.grafana_cloud.exports.logs_receiver,
+  ]
+
+  stage.json {
+      expressions = { "extracted_source" = "source" }
+  }
+
+  stage.labels {
+      values = { "source" = "extracted_source" }
+  }
+
+  stage.labels {
+      values = { "cloud-environment" = argument.environment }
+  }
+}
+
+prometheus.relabel "add_default_labels" {
+  rule {
+    source_labels = ["instance"]
+    target_label  = "agent_hostname"
+  }
+  rule {
+    target_label = ["cloud-environment"]
+    replacement = argument.environment
+  }
+  forward_to = [
+    module.git.grafana_cloud.exports.metrics_receiver,
+  ]
+}
+
+
+module.git "grafana_cloud" {
+  repository = "https://github.com/grafana/agent-modules.git"
+  path = "modules/grafana-cloud/autoconfigure/module.river"
+  revision = "main"
+  arguments {
+    stack_name = "cminformatiktesting"
+    token = arguement.token.value
+  }
+}
