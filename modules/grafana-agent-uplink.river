@@ -3,6 +3,7 @@ argument "token" {}
 argument "environment" {}
 
 argument "stack_name" {
+  optional = true
   default = "cminformatikt"
 }
 
