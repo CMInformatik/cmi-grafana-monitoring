@@ -53,6 +53,6 @@ module.git "grafana_cloud" {
   revision = "main"
   arguments {
     stack_name = "cminformatiktesting"
-    token = arguement.token.value
+    token = argument.token.value
   }
 }
