@@ -57,4 +57,3 @@ export AGENT_MODE="flow"
 
 echo "Grafana Agent configuration set. Running Grafana Agent..."
 /bin/grafana-agent run "$grafanaAgentConfigPath"
-

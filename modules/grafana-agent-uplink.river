@@ -60,6 +60,7 @@ prometheus.relabel "add_default_labels" {
     source_labels = ["job"]
     regex = "integrations/windows"
     action = "replace"
+    target_label = "job"
     replacement = "integrations/windows_exporter"
   }
   forward_to = [
