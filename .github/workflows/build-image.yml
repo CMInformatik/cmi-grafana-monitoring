@@ -26,6 +26,6 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
-          context: .
+          file: azure_grafana_agent/Dockerfile
           push: true
-          tags: ghcr.io/cminformatik/spacelift-runner:latest
+          tags: ghcr.io/cminformatik/cmi-grafana-agent:latest
