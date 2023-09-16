@@ -1,0 +1,77 @@
+module.git "base_module" {
+  repository = "https://github.com/CMInformatik/cmi-grafana-monitoring.git"
+  path       = "modules/grafana-agent-uplink.river"
+  revision = "<replace_branch_name>"
+  arguments {
+    token = "<replace_grafana_token>"
+    environment = "<replace_environment_name>"
+    stack_name = "<replace_stack_name>"
+  }
+}
+
+discovery.azure "main" {
+    subscription_id = "<replace_azure_subscription_id>"
+    port = 12345
+    oauth {
+      client_id = "<replace_azure_client_id>"
+      client_secret = "<replace_azure_client_secret>"
+      tenant_id = "<replace_azure_tenant_id>"
+  }
+}
+
+discovery.relabel "check_monitoring_lables" {
+  targets = discovery.azure.main.targets
+
+  rule {
+    action = "keep"
+    source_labels  = ["__meta_azure_machine_tag_grafanamonitoring"]
+    regex = true
+  }
+}
+
+discovery.relabel "windows_targets" {
+  targets = discovery.azure.main.targets
+
+  rule {
+    action = "keep"
+    source_labels  = ["__meta_azure_machine_tag_os"]
+    regex = "Windows"
+  }
+}
+
+discovery.relabel "linux_targets" {
+  targets = discovery.azure.main.targets
+
+  rule {
+    action = "keep"
+    source_labels  = ["__meta_azure_machine_tag_os"]
+    regex = "Linux"
+  }
+}
+
+module.git "windows_collector" {
+  repository = "https://github.com/CMInformatik/cmi-grafana-monitoring.git"
+  path       = "modules/windows-collector.river"
+  revision = "<replace_branch_name>"
+  arguments {
+    windows_metrics_destination = module.git.base_module.exports.metrics_receiver
+	windows_scrape_targets = discovery.relabel.windows_targets.output
+  }
+}
+
+module.git "linux_collector" {
+  repository = "https://github.com/CMInformatik/cmi-grafana-monitoring.git"
+  path       = "modules/linux-collector.river"
+  revision = "<replace_branch_name>"
+  arguments {
+    linux_metrics_destination = module.git.base_module.exports.metrics_receiver
+	linux_scrape_targets = discovery.relabel.linux_targets.output
+  }
+}
+
+prometheus.scrape "grafana_agent" {
+  targets = [{"__address__" = "localhost:12345", "job" = "integrations/agent-check", "instance" = "<replace_agent_name>"}]
+  forward_to = [
+    module.git.base_module.exports.metrics_receiver,
+  ]
+}
