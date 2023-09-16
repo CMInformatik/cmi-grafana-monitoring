@@ -25,4 +25,4 @@ jobs:
         with:
           file: azure_grafana_agent/Dockerfile
           push: true
-          tags: cmi-grafana-agent:latest
+          tags: registry.cmicloud.ch/cmi-grafana-agent:latest
