@@ -2,6 +2,11 @@ argument "token" {}
 
 argument "environment" {}
 
+argument "stack_name" {
+  optional = true
+  default = "cminformatik"
+}
+
 export "metrics_receiver" {
   value = prometheus.relabel.add_default_labels.receiver
 }
@@ -68,7 +73,7 @@ module.git "grafana_cloud" {
   path = "modules/grafana-cloud/autoconfigure/module.river"
   revision = "main"
   arguments {
-    stack_name = "cminformatiktesting"
+    stack_name = argument.stack_name.value
     token = argument.token.value
   }
 }
