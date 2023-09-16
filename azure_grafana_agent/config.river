@@ -12,10 +12,8 @@ module.git "base_module" {
 discovery.azure "main" {
     subscription_id = "<replace_azure_subscription_id>"
     port = 12345
-    oauth {
+    managed_identity {
       client_id = "<replace_azure_client_id>"
-      client_secret = "<replace_azure_client_secret>"
-      tenant_id = "<replace_azure_tenant_id>"
   }
 }
 
@@ -24,50 +22,52 @@ discovery.relabel "check_monitoring_lables" {
 
   rule {
     action = "keep"
-    source_labels  = ["__meta_azure_machine_tag_grafanamonitoring"]
-    regex = true
+    source_labels  = ["__meta_azure_machine_tag_GrafanaMonitoring"]
+    regex = "true"
   }
 }
 
-discovery.relabel "windows_targets" {
-  targets = discovery.azure.main.targets
+discovery.relabel "grafana_agent_job" {
+  targets = discovery.relabel.check_monitoring_lables.output
 
   rule {
-    action = "keep"
-    source_labels  = ["__meta_azure_machine_tag_os"]
+    action = "replace"
+    target_label = "job"
+    replacement = "integrations/agent-check"
+  }
+  rule {
+    action = "replace"
+    target_label = "__metrics_path__"
+    replacement = "/metrics"
+  }
+}
+
+discovery.relabel "os_metrics" {
+  targets = discovery.relabel.check_monitoring_lables.output
+
+  rule {
+    source_labels = ["__meta_azure_machine_tag_OS"]
     regex = "Windows"
+    action = "replace"
+    target_label = "__metrics_path__"
+    replacement = "/api/v0/component/prometheus.exporter.windows.default/metrics"
   }
-}
-
-discovery.relabel "linux_targets" {
-  targets = discovery.azure.main.targets
-
   rule {
-    action = "keep"
-    source_labels  = ["__meta_azure_machine_tag_os"]
+    source_labels = ["__meta_azure_machine_tag_OS"]
     regex = "Linux"
+    action = "replace"
+    target_label = "__metrics_path__"
+    replacement = "/api/v0/component/prometheus.exporter.unix.default/metrics"
   }
 }
 
-module.git "windows_collector" {
-  repository = "https://github.com/CMInformatik/cmi-grafana-monitoring.git"
-  path       = "modules/windows-collector.river"
-  revision = "<replace_branch_name>"
-  arguments {
-    windows_metrics_destination = module.git.base_module.exports.metrics_receiver
-	windows_scrape_targets = discovery.relabel.windows_targets.output
-  }
+prometheus.scrape "default_metrics" {
+  targets = concat(discovery.relabel.grafana_agent_job.output, discovery.relabel.os_metrics.output)
+  forward_to = [
+    module.git.base_module.exports.metrics_receiver,
+  ]
 }
 
-module.git "linux_collector" {
-  repository = "https://github.com/CMInformatik/cmi-grafana-monitoring.git"
-  path       = "modules/linux-collector.river"
-  revision = "<replace_branch_name>"
-  arguments {
-    linux_metrics_destination = module.git.base_module.exports.metrics_receiver
-	linux_scrape_targets = discovery.relabel.linux_targets.output
-  }
-}
 
 prometheus.scrape "grafana_agent" {
   targets = [{"__address__" = "localhost:12345", "job" = "integrations/agent-check", "instance" = "<replace_agent_name>"}]
