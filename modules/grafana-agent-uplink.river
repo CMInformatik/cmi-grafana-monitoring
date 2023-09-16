@@ -40,13 +40,27 @@ loki.relabel "add_default_lables" {
     target_label = "cloud_environment"
     replacement = argument.environment.value
   }
+  rule {
+    source_labels = ["__host__"]
+    target_label  = "agent_hostname"
+  }
 
 }
 
 prometheus.relabel "add_default_labels" {
   rule {
+    source_labels = ["instance"]
+    target_label  = "agent_hostname"
+  }
+  rule {
     target_label = "cloud_environment"
     replacement = argument.environment.value
+  }
+  rule {
+    source_labels = ["job"]
+    regex = "integrations/windows"
+    action = "replace"
+    replacement = "integrations/windows_exporter"
   }
   forward_to = [
     module.git.grafana_cloud.exports.metrics_receiver,
