@@ -46,8 +46,8 @@ export "logs_receiver" {
 
 otelcol.processor.batch "default" {
 	output {
-		metrics = [otelcol.exporter.prometheus.grafana_cloud_prometheus.input]
-		logs    = [otelcol.exporter.loki.grafana_cloud_loki.input]
+		metrics = [otelcol.exporter.prometheus.default.input]
+		logs    = [otelcol.exporter.loki.default.input]
 		traces  = [module.git.grafana_cloud.exports.traces_receiver]
 	}
 }
