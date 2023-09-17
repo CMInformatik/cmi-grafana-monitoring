@@ -51,10 +51,11 @@ replaceGrafanaAgentConfigValue "AZURE_SUBSCRIPTION_ID" "<replace_azure_subscript
 # Get all optional environment variables and set the values in the grafana agent config. If the value is not set, the config line will be removed
 replaceGrafanaAgentConfigValue "STACK_NAME" "<replace_stack_name>" 0 0
 replaceGrafanaAgentConfigValue "BRANCH_NAME" "<replace_branch_name>" 0 0 "master"
+replaceGrafanaAgentConfigValue "LOG_LEVEL" "<replace_log_level>" 0 0 "info"
 
 
 # Set Environment Variable AGENT_MODE to flow since we want to Run the Agent in Flow Mode
 export AGENT_MODE="flow"
 
 echo "Grafana Agent configuration set. Running Grafana Agent..."
-/bin/grafana-agent run "$grafanaAgentConfigPath"
+/bin/grafana-agent run "--server.http.listen-addr=0.0.0.0:12345" "$grafanaAgentConfigPath"
