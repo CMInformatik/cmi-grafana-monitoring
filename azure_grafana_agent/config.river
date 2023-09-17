@@ -9,7 +9,7 @@ module.git "base_module" {
 
 	arguments {
 		token       = "<replace_grafana_token>"
-		environment = "<replace_environment_name>"
+		site        = "<replace_site_name>"
 		stack_name  = "<replace_stack_name>"
 	}
 }
