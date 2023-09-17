@@ -1,18 +1,18 @@
-argument "token" {}
+argument "token" { }
 
-argument "environment" {}
+argument "environment" { }
 
 argument "stack_name" {
-  optional = true
-  default = "cminformatik"
+	optional = true
+	default  = "cminformatik"
 }
 
 export "metrics_receiver" {
-  value = prometheus.relabel.add_default_labels.receiver
+	value = prometheus.relabel.add_default_labels.receiver
 }
 
 export "logs_receiver" {
-  value = loki.process.default_processing.receiver
+	value = loki.process.default_processing.receiver
 }
 
 // export "traces_receiver" {
@@ -20,61 +20,65 @@ export "logs_receiver" {
 // }
 
 loki.process "default_processing" {
-  forward_to = [
-    loki.relabel.add_default_lables.receiver,
-  ]
-  stage.json {
-      expressions = { "extracted_source" = "source" }
-  }
+	forward_to = [
+		loki.relabel.add_default_lables.receiver,
+	]
 
-  stage.labels {
-      values = { "source" = "extracted_source" }
-  }
+	stage.json {
+		expressions = {"extracted_source" = "source"}
+	}
+
+	stage.labels {
+		values = {"source" = "extracted_source"}
+	}
 }
 
 loki.relabel "add_default_lables" {
-  forward_to = [
-    module.git.grafana_cloud.exports.logs_receiver,
-  ]
-  rule {
-    target_label = "cloud_environment"
-    replacement = argument.environment.value
-  }
-  rule {
-    source_labels = ["__host__"]
-    target_label  = "agent_hostname"
-  }
+	forward_to = [
+		module.git.grafana_cloud.exports.logs_receiver,
+	]
 
+	rule {
+		target_label = "cloud_environment"
+		replacement  = argument.environment.value
+	}
+
+	rule {
+		source_labels = ["__host__"]
+		target_label  = "agent_hostname"
+	}
 }
 
 prometheus.relabel "add_default_labels" {
-  rule {
-    source_labels = ["instance"]
-    target_label  = "agent_hostname"
-  }
-  rule {
-    target_label = "cloud_environment"
-    replacement = argument.environment.value
-  }
-  rule {
-    source_labels = ["job"]
-    regex = "integrations/windows"
-    action = "replace"
-    target_label = "job"
-    replacement = "integrations/windows_exporter"
-  }
-  forward_to = [
-    module.git.grafana_cloud.exports.metrics_receiver,
-  ]
+	rule {
+		source_labels = ["instance"]
+		target_label  = "agent_hostname"
+	}
+
+	rule {
+		target_label = "cloud_environment"
+		replacement  = argument.environment.value
+	}
+
+	rule {
+		source_labels = ["job"]
+		regex         = "integrations/windows"
+		action        = "replace"
+		target_label  = "job"
+		replacement   = "integrations/windows_exporter"
+	}
+	forward_to = [
+		module.git.grafana_cloud.exports.metrics_receiver,
+	]
 }
 
-
 module.git "grafana_cloud" {
-  repository = "https://github.com/grafana/agent-modules.git"
-  path = "modules/grafana-cloud/autoconfigure/module.river"
-  revision = "main"
-  arguments {
-    stack_name = argument.stack_name.value
-    token = argument.token.value
-  }
+	repository = "https://github.com/grafana/agent-modules.git"
+	path       = "modules/grafana-cloud/autoconfigure/module.river"
+	revision   = "main"
+
+	arguments {
+		stack_name = argument.stack_name.value
+		token      = argument.token.value
+	}
 }

@@ -1,77 +1,106 @@
+logging {
+	level = "<replace_log_level>"
+}
+
 module.git "base_module" {
-  repository = "https://github.com/CMInformatik/cmi-grafana-monitoring.git"
-  path       = "modules/grafana-agent-uplink.river"
-  revision = "<replace_branch_name>"
-  arguments {
-    token = "<replace_grafana_token>"
-    environment = "<replace_environment_name>"
-    stack_name = "<replace_stack_name>"
-  }
+	repository = "https://github.com/CMInformatik/cmi-grafana-monitoring.git"
+	path       = "modules/grafana-agent-uplink.river"
+	revision   = "<replace_branch_name>"
+
+	arguments {
+		token       = "<replace_grafana_token>"
+		environment = "<replace_environment_name>"
+		stack_name  = "<replace_stack_name>"
+	}
 }
 
 discovery.azure "main" {
-    subscription_id = "<replace_azure_subscription_id>"
-    port = 12345
-    managed_identity {
-      client_id = "<replace_azure_client_id>"
-  }
+	subscription_id = "<replace_azure_subscription_id>"
+	port            = 12345
+
+	managed_identity {
+		client_id = "<replace_azure_client_id>"
+	}
 }
 
 discovery.relabel "check_monitoring_lables" {
-  targets = discovery.azure.main.targets
+	targets = discovery.azure.main.targets
 
-  rule {
-    action = "keep"
-    source_labels  = ["__meta_azure_machine_tag_GrafanaMonitoring"]
-    regex = "true"
-  }
+	rule {
+		action        = "keep"
+		source_labels = ["__meta_azure_machine_tag_GrafanaMonitoring"]
+		regex         = "true"
+	}
+}
+
+discovery.relabel "add_instance_label" {
+	targets = discovery.relabel.check_monitoring_lables.output
+
+	rule {
+		action        = "replace"
+		source_labels = ["__meta_azure_machine_name"]
+		target_label  = "instance"
+	}
+
+	rule {
+		action        = "replace"
+		source_labels = ["__meta_azure_machine_name"]
+		target_label  = "agent_name"
+	}
+
+	rule {
+		action        = "replace"
+		source_labels = ["__meta_azure_machine_computer_name"]
+		target_label  = "azure_computer_name"
+	}
 }
 
 discovery.relabel "grafana_agent_job" {
-  targets = discovery.relabel.check_monitoring_lables.output
+	targets = discovery.relabel.add_instance_label.output
 
-  rule {
-    action = "replace"
-    target_label = "job"
-    replacement = "integrations/agent-check"
-  }
-  rule {
-    action = "replace"
-    target_label = "__metrics_path__"
-    replacement = "/metrics"
-  }
+	rule {
+		action       = "replace"
+		target_label = "job"
+		replacement  = "integrations/agent"
+	}
+
+	rule {
+		action       = "replace"
+		target_label = "__metrics_path__"
+		replacement  = "/metrics"
+	}
 }
 
 discovery.relabel "os_metrics" {
-  targets = discovery.relabel.check_monitoring_lables.output
+	targets = discovery.relabel.add_instance_label.output
 
-  rule {
-    source_labels = ["__meta_azure_machine_tag_OS"]
-    regex = "Windows"
-    action = "replace"
-    target_label = "__metrics_path__"
-    replacement = "/api/v0/component/prometheus.exporter.windows.default/metrics"
-  }
-  rule {
-    source_labels = ["__meta_azure_machine_tag_OS"]
-    regex = "Linux"
-    action = "replace"
-    target_label = "__metrics_path__"
-    replacement = "/api/v0/component/prometheus.exporter.unix.default/metrics"
-  }
+	rule {
+		source_labels = ["__meta_azure_machine_tag_OS"]
+		regex         = "Windows"
+		action        = "replace"
+		target_label  = "__metrics_path__"
+		replacement   = "/api/v0/component/prometheus.exporter.windows.default/metrics"
+	}
+
+	rule {
+		source_labels = ["__meta_azure_machine_tag_OS"]
+		regex         = "Linux"
+		action        = "replace"
+		target_label  = "__metrics_path__"
+		replacement   = "/api/v0/component/prometheus.exporter.unix.default/metrics"
+	}
 }
 
 prometheus.scrape "default_metrics" {
-  targets = concat(discovery.relabel.grafana_agent_job.output, discovery.relabel.os_metrics.output)
-  forward_to = [
-    module.git.base_module.exports.metrics_receiver,
-  ]
+	targets    = concat(discovery.relabel.grafana_agent_job.output, discovery.relabel.os_metrics.output)
+	forward_to = [
+		module.git.base_module.exports.metrics_receiver,
+	]
 }
 
-
 prometheus.scrape "grafana_agent" {
-  targets = [{"__address__" = "localhost:12345", "job" = "integrations/agent-check", "instance" = "<replace_agent_name>"}]
-  forward_to = [
-    module.git.base_module.exports.metrics_receiver,
-  ]
+	targets    = [{"__address__" = "localhost:12345", "job" = "integrations/agent", "instance" = "<replace_agent_name>"}]
+	forward_to = [
+		module.git.base_module.exports.metrics_receiver,
+	]
 }
