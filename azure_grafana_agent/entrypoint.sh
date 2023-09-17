@@ -41,7 +41,7 @@ echo "Reading environment variables and setting Grafana Agent configuration..."
 
 # Get all required environment variables and set the values in the grafana agent config
 replaceGrafanaAgentConfigValue "GRAFANA_TOKEN" "<replace_grafana_token>" 1 1
-replaceGrafanaAgentConfigValue "ENVIRONMENT_NAME" "<replace_environment_name>" 1 0
+replaceGrafanaAgentConfigValue "SITE_NAME" "<replace_environment_name>" 1 0
 replaceGrafanaAgentConfigValue "AGENT_NAME" "<replace_agent_name>" 1 0
 replaceGrafanaAgentConfigValue "AZURE_CLIENT_ID" "<replace_azure_client_id>" 1 0
 replaceGrafanaAgentConfigValue "AZURE_SUBSCRIPTION_ID" "<replace_azure_subscription_id>" 1 0

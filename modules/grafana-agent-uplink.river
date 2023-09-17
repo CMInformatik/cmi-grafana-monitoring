@@ -1,11 +1,19 @@
+/********************************************
+ * ARGUMENTS
+ ********************************************/
+
 argument "token" { }
 
-argument "environment" { }
+argument "site" { }
 
 argument "stack_name" {
 	optional = true
 	default  = "cminformatik"
 }
+
+/********************************************
+ * EXPORTS
+ ********************************************/
 
 export "metrics_receiver" {
 	value = prometheus.relabel.add_default_labels.receiver
@@ -18,6 +26,43 @@ export "logs_receiver" {
 // export "traces_receiver" {
 //   value = otelcol.exporter.otlp.default.input
 // }
+
+
+
+/********************************************
+ * OPEN TELEMTRY RESOURCES
+ ********************************************/
+
+ otelcol.receiver.otlp "default" {
+	grpc { }
+	http { }
+
+	output {
+		metrics = [otelcol.processor.batch.default.input]
+		logs    = [otelcol.processor.batch.default.input]
+		traces  = [otelcol.processor.batch.default.input]
+	}
+}
+
+otelcol.processor.batch "default" {
+	output {
+		metrics = [otelcol.exporter.prometheus.grafana_cloud_prometheus.input]
+		logs    = [otelcol.exporter.loki.grafana_cloud_loki.input]
+		traces  = [module.git.grafana_cloud.exports.traces_receiver]
+	}
+}
+
+otelcol.exporter.loki "default" {
+	forward_to = [loki.process.default_processing.receiver]
+}
+
+otelcol.exporter.prometheus "default" {
+	forward_to = [prometheus.relabel.add_default_labels.receiver]
+}
+
+/********************************************
+ * UPLINK RESOURCES
+ ********************************************/
 
 loki.process "default_processing" {
 	forward_to = [
@@ -39,8 +84,8 @@ loki.relabel "add_default_lables" {
 	]
 
 	rule {
-		target_label = "cloud_environment"
-		replacement  = argument.environment.value
+		target_label = "site"
+		replacement  = argument.site.value
 	}
 
 	rule {
@@ -56,8 +101,8 @@ prometheus.relabel "add_default_labels" {
 	}
 
 	rule {
-		target_label = "cloud_environment"
-		replacement  = argument.environment.value
+		target_label = "site"
+		replacement  = argument.site.value
 	}
 
 	rule {
