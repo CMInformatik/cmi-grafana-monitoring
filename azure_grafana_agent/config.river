@@ -84,10 +84,26 @@ discovery.relabel "os_metrics" {
 
 	rule {
 		source_labels = ["__meta_azure_machine_tag_OS"]
+		regex         = "Windows"
+		action        = "replace"
+		target_label  = "job"
+		replacement   = "integrations/windows_exporter"
+	}
+
+	rule {
+		source_labels = ["__meta_azure_machine_tag_OS"]
 		regex         = "Linux"
 		action        = "replace"
 		target_label  = "__metrics_path__"
 		replacement   = "/api/v0/component/prometheus.exporter.unix.default/metrics"
+	}
+
+	rule {
+		source_labels = ["__meta_azure_machine_tag_OS"]
+		regex         = "Linux"
+		action        = "replace"
+		target_label  = "job"
+		replacement   = "integrations/node_exporter"
 	}
 }
 
