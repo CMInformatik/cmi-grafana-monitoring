@@ -45,7 +45,7 @@ replaceGrafanaAgentConfigValue "SITE_NAME" "<replace_site_name>" 1 0
 replaceGrafanaAgentConfigValue "AGENT_NAME" "<replace_agent_name>" 1 0
 replaceGrafanaAgentConfigValue "AZURE_CLIENT_ID" "<replace_azure_client_id>" 1 0
 replaceGrafanaAgentConfigValue "AZURE_SUBSCRIPTION_ID" "<replace_azure_subscription_id>" 1 0
-
+replaceGrafanaAgentConfigValue "AZURE_ENV_NAME" "<replace_azure_env_name>" 1 0
 
 
 # Get all optional environment variables and set the values in the grafana agent config. If the value is not set, the config line will be removed

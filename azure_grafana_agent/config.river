@@ -33,6 +33,16 @@ discovery.relabel "check_monitoring_lables" {
 	}
 }
 
+discovery.relabel "check_monitoring_lables_env" {
+	targets = discovery.azure.main.targets
+
+	rule {
+		action        = "keep"
+		source_labels = ["__meta_azure_machine_tag_Enviroment"]
+		regex         = "<replace_azure_env_name>"
+	}
+}
+
 discovery.relabel "add_instance_label" {
 	targets = discovery.relabel.check_monitoring_lables.output
 
