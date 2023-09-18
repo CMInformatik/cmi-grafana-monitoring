@@ -28,11 +28,15 @@ export "metrics_receiver" {
 }
 
 export "logs_receiver" {
-	value = loki.process.default_processing.receiver
+	value = loki.process.add_default_lables.receiver
 }
 
 export "traces_receiver" {
 	value = module.git.grafana_cloud.exports.traces_receiver
+}
+
+export "agent_logs_receiver" {
+	value = loki.relabel.grafana_agnet_log_processing.receiver
 }
 
 /********************************************
@@ -60,7 +64,7 @@ otelcol.processor.batch "default" {
 }
 
 otelcol.exporter.loki "default" {
-	forward_to = [loki.process.default_processing.receiver]
+	forward_to = [loki.process.add_default_lables.receiver]
 }
 
 otelcol.exporter.prometheus "default" {
@@ -68,21 +72,23 @@ otelcol.exporter.prometheus "default" {
 }
 
 /********************************************
- * UPLINK RESOURCES
+ * RELABELING RESOURCES
  ********************************************/
 
-loki.process "default_processing" {
+ loki.process "grafana_agnet_log_processing" {
 	forward_to = [
 		loki.relabel.add_default_lables.receiver,
 	]
 
 	stage.json {
-		expressions = {"extracted_source" = "source"}
+		expressions = {level = "level"}
 	}
 
-	stage.labels {
-		values = {"source" = "extracted_source"}
-	}
+	stage.static_labels {
+    values = {
+      job = "integrations/agent",
+    }
+}
 }
 
 loki.relabel "add_default_lables" {
@@ -123,6 +129,11 @@ prometheus.relabel "add_default_labels" {
 		module.git.grafana_cloud.exports.metrics_receiver,
 	]
 }
+
+
+/********************************************
+ * UPLINK RESOURCES
+ ********************************************/
 
 module.git "grafana_cloud" {
 	repository = "https://github.com/grafana/agent-modules.git"
