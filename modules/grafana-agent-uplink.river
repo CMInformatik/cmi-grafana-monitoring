@@ -1,12 +1,25 @@
 /********************************************
+ * Grafana Collector Base Configuration
+
+ The following configuration functions as base configuration for all Grafana Collectors operated by CM Informatik AG.
+ Currently, the module exposes a metrics, logs and traces receiver for the CMI Grafana Cloud instance.
+ The default instance is cminfromatik, but you can change it by setting the stack_name argument.
+ ********************************************/
+
+/********************************************
  * ARGUMENTS
  ********************************************/
 
-argument "token" { }
+argument "token" {
+	comment = "Token to authenticate with Grafana Cloud."
+}
 
-argument "site" { }
+argument "site" {
+	comment = "The site name of the environment the collector is running in. E.g Netrics or CMI-Cloud-Prod"
+}
 
 argument "stack_name" {
+	comment  = "Name of the Grafana Cloud stack to send data to."
 	optional = true
 	default  = "cminformatik"
 }
@@ -23,18 +36,17 @@ export "logs_receiver" {
 	value = loki.process.default_processing.receiver
 }
 
-// export "traces_receiver" {
-//   value = otelcol.exporter.otlp.default.input
-// }
-
-
+export "traces_receiver" {
+	value = module.git.grafana_cloud.exports.traces_receiver
+}
 
 /********************************************
  * OPEN TELEMTRY RESOURCES
  ********************************************/
 
- otelcol.receiver.otlp "default" {
+otelcol.receiver.otlp "default" {
 	grpc { }
+
 	http { }
 
 	output {
