@@ -44,19 +44,19 @@ discovery.relabel "add_instance_label" {
 
 	rule {
 		action        = "replace"
-		source_labels = ["__meta_azure_machine_name"]
+		source_labels = ["__meta_azure_machine_computer_name"]
 		target_label  = "instance"
 	}
 
 	rule {
 		action        = "replace"
-		source_labels = ["__meta_azure_machine_name"]
+		source_labels = ["__meta_azure_machine_computer_name"]
 		target_label  = "agent_name"
 	}
 
 	rule {
 		action        = "replace"
-		source_labels = ["__meta_azure_machine_computer_name"]
+		source_labels = ["__meta_azure_machine_name"]
 		target_label  = "azure_computer_name"
 	}
 }
