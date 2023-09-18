@@ -31,6 +31,12 @@ discovery.relabel "check_monitoring_lables" {
 		source_labels = ["__meta_azure_machine_tag_GrafanaMonitoring"]
 		regex         = "true"
 	}
+
+	rule {
+		action        = "keep"
+		source_labels = ["__meta_azure_machine_tag_Environment"]
+		regex         = "<replace_azure_env_name>"
+	}
 }
 
 discovery.relabel "add_instance_label" {
