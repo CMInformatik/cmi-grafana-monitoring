@@ -1,0 +1,96 @@
+/********************************************
+ * File Scrape Target Collector
+
+ The following module can be used to get scrape targets for Windows, GrafanaAgent and MSSQL Metrics from a file.
+ The file containing the scrape targets should be in the following format:
+ [
+    {
+      "targets": [ "localhost:12345"],
+      "labels": {
+        "instance": "CMIDAPWEB02"
+      }
+    },
+    {
+      "targets": [ "10.130.11.14:12345" ],
+      "labels": {
+        "instance": "cmidaprelay01"
+      }
+    }
+]
+ ********************************************/
+
+argument "windows_targets_file_path" { }
+
+argument "mssql_targets_file_path" { }
+
+argument "linux_targets_file_path" { }
+
+export "targets" {
+	value = concat(
+		discovery.relabel.add_windows_job_labels.output,
+		discovery.relabel.add_agent_metrics_labels.output,
+		discovery.relabel.add_mssql_metrics_lables.output,
+		discovery.relabel.add_linux_job_labels.output,
+	)
+}
+
+discovery.file "windows_targets" {
+	files = [argument.windows_targets_file_path.value]
+}
+
+discovery.file "mssql_targets" {
+	files = [argument.mssql_targets_file_path.value]
+}
+
+discovery.file "linux_targets" {
+	files = [argument.linux_targets_file_path.value]
+}
+
+discovery.relabel "add_windows_job_labels" {
+	targets = discovery.file.windows_targets.targets
+
+	rule {
+		target_label = "job"
+		replacement  = "integrations/windows"
+	}
+
+	rule {
+		target_label = "__metrics_path__"
+		replacement  = "/api/v0/component/prometheus.exporter.windows.default/metrics"
+	}
+}
+
+discovery.relabel "add_linux_job_labels" {
+	targets = discovery.file.linux_targets.targets
+
+	rule {
+		target_label = "job"
+		replacement  = "integrations/node_exporter"
+	}
+
+	rule {
+		target_label = "__metrics_path__"
+		replacement  = "/api/v0/component/prometheus.exporter.unix.default/metrics"
+	}
+}
+
+discovery.relabel "add_agent_metrics_labels" {
+	targets = concat(
+		discovery.file.windows_targets.targets,
+		discovery.file.linux_targets.targets,
+	)
+
+	rule {
+		target_label = "job"
+		replacement  = "integrations/agent"
+	}
+}
+
+discovery.relabel "add_mssql_metrics_lables" {
+	targets = discovery.file.mssql_targets.targets
+
+	rule {
+		target_label = "__metrics_path__"
+		replacement  = "/api/v0/component/prometheus.exporter.mssql.default/metrics"
+	}
+}
