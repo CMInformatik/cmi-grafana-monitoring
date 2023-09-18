@@ -28,7 +28,7 @@ export "metrics_receiver" {
 }
 
 export "logs_receiver" {
-	value = loki.process.add_default_lables.receiver
+	value = loki.relabel.add_default_lables.receiver
 }
 
 export "traces_receiver" {
@@ -36,7 +36,7 @@ export "traces_receiver" {
 }
 
 export "agent_logs_receiver" {
-	value = loki.relabel.grafana_agnet_log_processing.receiver
+	value = loki.process.grafana_agnet_log_processing.receiver
 }
 
 /********************************************
