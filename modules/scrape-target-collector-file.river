@@ -19,18 +19,18 @@
 ]
  ********************************************/
 
-argument "windows_targets_file_path" {}
+argument "windows_targets_file_path" { }
 
-argument "mssql_targets_file_path" {}
+argument "mssql_targets_file_path" { }
 
-argument "linux_targets_file_path" {}
+argument "linux_targets_file_path" { }
 
 export "targets" {
-	value   = concat(
+	value = concat(
 		discovery.relabel.add_windows_job_labels.output,
 		discovery.relabel.add_agent_metrics_labels.output,
 		discovery.relabel.add_mssql_metrics_lables.output,
-    discovery.relabel.add_linux_job_labels.output,
+		discovery.relabel.add_linux_job_labels.output,
 	)
 }
 
@@ -61,7 +61,7 @@ discovery.relabel "add_windows_job_labels" {
 }
 
 discovery.relabel "add_linux_job_labels" {
-	targets = discovery.file.windows_targets.targets
+	targets = discovery.file.linux_targets.targets
 
 	rule {
 		target_label = "job"
@@ -76,9 +76,9 @@ discovery.relabel "add_linux_job_labels" {
 
 discovery.relabel "add_agent_metrics_labels" {
 	targets = concat(
-    discovery.file.windows_targets.targets,
-    discovery.file.linux_targets.targets,
-  )
+		discovery.file.windows_targets.targets,
+		discovery.file.linux_targets.targets,
+	)
 
 	rule {
 		target_label = "job"
