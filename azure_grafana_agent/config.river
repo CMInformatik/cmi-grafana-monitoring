@@ -31,14 +31,10 @@ discovery.relabel "check_monitoring_lables" {
 		source_labels = ["__meta_azure_machine_tag_GrafanaMonitoring"]
 		regex         = "true"
 	}
-}
-
-discovery.relabel "check_monitoring_lables_env" {
-	targets = discovery.azure.main.targets
 
 	rule {
 		action        = "keep"
-		source_labels = ["__meta_azure_machine_tag_Enviroment"]
+		source_labels = ["__meta_azure_machine_tag_Environment"]
 		regex         = "<replace_azure_env_name>"
 	}
 }
