@@ -10,16 +10,11 @@
  * ARGUMENTS
  ********************************************/
 
-argument "token" {
-	comment = "Token to authenticate with Grafana Cloud."
-}
+argument "token" {}
 
-argument "site" {
-	comment = "The site name of the environment the collector is running in. E.g Netrics or CMI-Cloud-Prod"
-}
+argument "site" {}
 
 argument "stack_name" {
-	comment  = "Name of the Grafana Cloud stack to send data to."
 	optional = true
 	default  = "cminformatik"
 }

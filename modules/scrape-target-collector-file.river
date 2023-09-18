@@ -19,16 +19,11 @@
 ]
  ********************************************/
 
-argument "windows_targets_file_path" {
-	comment = "Path to the file containing windows exporter scrape targets. E.g C:\\CMI-Grafana\\windows_targets.json"
-}
+argument "windows_targets_file_path" {}
 
-argument "mssql_targets_file_path" {
-	comment = "Path to the file containing mssql exporter scrape targets. E.g C:\\CMI-Grafana\\mssql_targets.json"
-}
+argument "mssql_targets_file_path" {}
 
 export "targets" {
-	comment = "List of all Agent, Windows and MSSQL scrape targets"
 	value   = concat(
 		discovery.relabel.add_windows_job_labels.output,
 		discovery.relabel.add_agent_metrics_labels.output,
