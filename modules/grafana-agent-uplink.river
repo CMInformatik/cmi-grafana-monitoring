@@ -64,7 +64,7 @@ otelcol.processor.batch "default" {
 }
 
 otelcol.exporter.loki "default" {
-	forward_to = [loki.process.add_default_lables.receiver]
+	forward_to = [loki.relabel.add_default_lables.receiver]
 }
 
 otelcol.exporter.prometheus "default" {
