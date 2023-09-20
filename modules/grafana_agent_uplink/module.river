@@ -147,7 +147,7 @@ prometheus.relabel "add_default_labels" {
 
 module.git "grafana_cloud" {
 	repository = "https://github.com/CMInformatik/cmi-grafana-monitoring.git"
-	path       = "modules/grafana-cloud/grafana_cloud_autoconfig/module.river"
+	path       = "modules/grafana_cloud_autoconfig/module.river"
 	revision   = argument.submodule_branch.value
 
 	arguments {
