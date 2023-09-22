@@ -10,9 +10,9 @@
  * ARGUMENTS
  ********************************************/
 
-argument "token" {}
+argument "token" { }
 
-argument "site" {}
+argument "site" { }
 
 argument "submodule_branch" {
 	optional = true
@@ -85,7 +85,7 @@ otelcol.exporter.prometheus "default" {
  * RELABELING RESOURCES
  ********************************************/
 
- loki.process "grafana_agnet_log_processing" {
+loki.process "grafana_agnet_log_processing" {
 	forward_to = [
 		loki.relabel.add_default_lables.receiver,
 	]
@@ -95,10 +95,10 @@ otelcol.exporter.prometheus "default" {
 	}
 
 	stage.static_labels {
-    values = {
-      job = "integrations/agent",
-    }
-}
+		values = {
+			job = "integrations/agent",
+		}
+	}
 }
 
 loki.relabel "add_default_lables" {
@@ -139,7 +139,6 @@ prometheus.relabel "add_default_labels" {
 		module.git.grafana_cloud.exports.metrics_receiver,
 	]
 }
-
 
 /********************************************
  * UPLINK RESOURCES

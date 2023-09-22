@@ -3,7 +3,7 @@
  ********************************************/
 argument "stack_name" { }
 
-argument "token" {}
+argument "token" { }
 
 argument "proxy_url" {
 	optional = true
@@ -15,23 +15,23 @@ argument "proxy_url" {
  ********************************************/
 
 export "metrics_receiver" {
-  value = prometheus.remote_write.default.receiver
+	value = prometheus.remote_write.default.receiver
 }
 
 export "logs_receiver" {
-  value = loki.write.default.receiver
+	value = loki.write.default.receiver
 }
 
 export "traces_receiver" {
-  value = otelcol.exporter.otlp.default.input
+	value = otelcol.exporter.otlp.default.input
 }
 
 export "profiles_receiver" {
-  value = pyroscope.write.default.receiver
+	value = pyroscope.write.default.receiver
 }
 
 export "stack_information" {
-  value = json_decode(remote.http.config_file.content)
+	value = json_decode(remote.http.config_file.content)
 }
 
 /********************************************
@@ -39,12 +39,13 @@ export "stack_information" {
  ********************************************/
 
 remote.http "config_file" {
-  url = "https://grafana.com/api/instances/" + argument.stack_name.value
-  client {
-    bearer_token = argument.token.value
-    proxy_url = argument.proxy_url.value
-  }
-  poll_frequency = "24h"
+	url = "https://grafana.com/api/instances/" + argument.stack_name.value
+
+	client {
+		bearer_token = argument.token.value
+		proxy_url    = argument.proxy_url.value
+	}
+	poll_frequency = "24h"
 }
 
 /********************************************
@@ -53,52 +54,52 @@ remote.http "config_file" {
 
 // Metrics
 prometheus.remote_write "default" {
-  endpoint {
-    proxy_url = argument.proxy_url.value
-    url = json_decode(remote.http.config_file.content)["hmInstancePromUrl"] + "/api/prom/push"
+	endpoint {
+		proxy_url = argument.proxy_url.value
+		url       = json_decode(remote.http.config_file.content)["hmInstancePromUrl"] + "/api/prom/push"
 
-    basic_auth {
-      username = json_decode(remote.http.config_file.content)["hmInstancePromId"]
-      password = argument.token.value
-    }
-  }
+		basic_auth {
+			username = json_decode(remote.http.config_file.content)["hmInstancePromId"]
+			password = argument.token.value
+		}
+	}
 }
 
 // Logs
 loki.write "default" {
-  endpoint {
-    proxy_url = argument.proxy_url.value
-    url = json_decode(remote.http.config_file.content)["hlInstanceUrl"] + "/loki/api/v1/push"
+	endpoint {
+		proxy_url = argument.proxy_url.value
+		url       = json_decode(remote.http.config_file.content)["hlInstanceUrl"] + "/loki/api/v1/push"
 
-    basic_auth {
-      username = json_decode(remote.http.config_file.content)["hlInstanceId"]
-      password = argument.token.value
-    }
-  }
+		basic_auth {
+			username = json_decode(remote.http.config_file.content)["hlInstanceId"]
+			password = argument.token.value
+		}
+	}
 }
 
 // Traces
 otelcol.auth.basic "default" {
-  username = json_decode(remote.http.config_file.content)["htInstanceId"]
-  password = argument.token.value
+	username = json_decode(remote.http.config_file.content)["htInstanceId"]
+	password = argument.token.value
 }
 
 otelcol.exporter.otlp "default" {
-  client {
-    endpoint = json_decode(remote.http.config_file.content)["htInstanceUrl"] + ":443"
-    auth     = otelcol.auth.basic.default.handler
-  }
+	client {
+		endpoint = json_decode(remote.http.config_file.content)["htInstanceUrl"] + ":443"
+		auth     = otelcol.auth.basic.default.handler
+	}
 }
 
 // Profiles
 pyroscope.write "default" {
-  endpoint {
-    proxy_url = argument.proxy_url.value
-    url = json_decode(remote.http.config_file.content)["hpInstanceUrl"]
+	endpoint {
+		proxy_url = argument.proxy_url.value
+		url       = json_decode(remote.http.config_file.content)["hpInstanceUrl"]
 
-    basic_auth {
-      username = json_decode(remote.http.config_file.content)["hpInstanceId"]
-      password = argument.token.value
-    }
-  }
+		basic_auth {
+			username = json_decode(remote.http.config_file.content)["hpInstanceId"]
+			password = argument.token.value
+		}
+	}
 }

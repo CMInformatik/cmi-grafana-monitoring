@@ -8,9 +8,9 @@ module.git "base_module" {
 	revision   = "<replace_branch_name>"
 
 	arguments {
-		token       = "<replace_grafana_token>"
-		site        = "<replace_site_name>"
-		stack_name  = "<replace_stack_name>"
+		token            = "<replace_grafana_token>"
+		site             = "<replace_site_name>"
+		stack_name       = "<replace_stack_name>"
 		submodule_branch = "<replace_branch_name>"
 	}
 }
