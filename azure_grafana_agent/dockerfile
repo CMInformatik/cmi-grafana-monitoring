@@ -1,7 +1,7 @@
 FROM grafana/agent:latest
 
-COPY ./azure_grafana_agent/entrypoint.sh /bin/entrypoint.sh
-COPY ./azure_grafana_agent/config.river /etc/agent/config.river
+COPY /entrypoint.sh /bin/entrypoint.sh
+COPY /config.river /etc/agent/config.river
 
 RUN chmod +x /bin/entrypoint.sh
 
