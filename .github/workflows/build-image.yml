@@ -4,7 +4,7 @@ on:
   push:
     branches: [master]
     paths:
-      - "azure_grafana_agent/**"
+      - "grafana_collector_container/**"
   workflow_dispatch:
 
 jobs:
@@ -28,6 +28,6 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
-          file: azure_grafana_agent/Dockerfile
+          file: grafana_collector_container/Dockerfile
           push: true
           tags: ghcr.io/cminformatik/cmi-grafana-agent:latest

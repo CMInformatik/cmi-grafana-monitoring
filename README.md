@@ -4,7 +4,7 @@ Das folgende Projekt enthält alle Resourcen, die im Zusammenhang mit dem Grafan
 
 ## Azure Collector Container
 
-Im Ordner `azure_grafana_agent` befinden sich das Projekt für den Grafana Collector, der in jeder Azure Umgebung (CMI Cloud Prod, CMI Cloud Stage usw.) einmal läuft. Dieser Collector wird als Container gestartet und findet alle VMs in der angegebenen Azure Subscription. Die Authentifizierung bei Azure erfolgt dabei über eine Managed Identity der Container Instance.
+Im Ordner `grafana_collector_container` befinden sich das Projekt für den Grafana Collector, der in jeder Azure Umgebung (CMI Cloud Prod, CMI Cloud Stage usw.) einmal läuft. Dieser Collector wird als Container gestartet und findet alle VMs in der angegebenen Azure Subscription. Die Authentifizierung bei Azure erfolgt dabei über eine Managed Identity der Container Instance.
 
 ### Konfiguration
 
@@ -28,7 +28,7 @@ Der Collector stellt eine Opentelemetry-Schnittstelle bereit. Diese hört auf de
 
 ### Testen des Collectors
 
-Für die Secrets muss im Ordner `azure_grafana_agent` ein Secrets file mit dem Namen `agent_secrets.env` und folgenden Inhalt angelegt werden:
+Für die Secrets muss im Ordner `grafana_collector_container` ein Secrets file mit dem Namen `agent_secrets.env` und folgenden Inhalt angelegt werden:
 
 ```bash
 GRAFANA_TOKEN=<grafana_token>
@@ -37,8 +37,8 @@ GRAFANA_TOKEN=<grafana_token>
 Um den Collector lokal zu testen, kann diser anschliessend mit dem folgenden Befehl gebaut und gestartet werden:
 
 ```bash
-docker build --tag "grafana_collector_local_image:latest" .\azure_grafana_agent\
-docker compose -f .\azure_grafana_agent\docker-compose.yaml up
+docker build --tag "grafana_collector_local_image:latest" .\grafana_collector_container\
+docker compose -f .\grafana_collector_container\docker-compose.yaml up
 ```
 
 ## Grafana Agent River Module
