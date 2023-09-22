@@ -26,6 +26,7 @@ jobs:
         uses: robinraju/release-downloader@v1.8
         with:
           latest: true
+          repository: "grafana/river"
           fileName: "riverfmt_linux_amd64.tar.gz"
 
       - name: Unpack River Formatter
