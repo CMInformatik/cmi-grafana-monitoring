@@ -26,6 +26,21 @@ Der Container lässt sich vollständig per Env-Variablen konfigurieren. Die folg
 
 Der Collector stellt eine Opentelemetry-Schnittstelle bereit. Diese hört auf den Ports 4317 (OTLP-GRPC) und 4318 (OTLP-HTTP). Die Schnittstelle kann genutzt werden, um Metriken, Logs und Traces an den Collector zu senden. Die Daten werden dann verarbeitet (filtering und tagging) und an den konfigurierten Grafana Cloud Stack gesendet.
 
+### Testen des Collectors
+
+Für die Secrets muss im Ordner `azure_grafana_agent` ein Secrets file mit dem Namen `agent_secrets.env` und folgenden Inhalt angelegt werden:
+
+```bash
+GRAFANA_TOKEN=<grafana_token>
+```
+
+Um den Collector lokal zu testen, kann diser anschliessend mit dem folgenden Befehl gebaut und gestartet werden:
+
+```bash
+docker build --tag "grafana_collector_local_image:latest" .\azure_grafana_agent\
+docker compose -f .\azure_grafana_agent\docker-compose.yaml up
+```
+
 ## Grafana Agent River Module
 
 Der Grafana Agent flow nutzt als Konfigurations-Sprache eine Eigenentwicklung von Grafana namens River. River erlaubt das Auslagern von Konfigurationen in sogenannte Module. Im Ordner `modules` befinden sich einige solche Module, die in verschiedenen Umgebungen verwendet werden (UMB, Netrics, Azure usw.). Genauere Informationen zu den Modulen können den jeweiligen Readme-Dateien entnommen werden. Weitere Informationen bezüglich Grafana Agent Flow und River könenn dem [folgenden Link](https://grafana.com/docs/agent/latest/flow/) entnommen werden.
@@ -33,3 +48,7 @@ Der Grafana Agent flow nutzt als Konfigurations-Sprache eine Eigenentwicklung vo
 ## Tooling
 
 Zum aktuellen Zeitpunkt existiert für River kein wirkliches Tooling. In der [folgenden Repository](https://github.com/rfratto/vscode-river) befindet sich eine basic VSCode Extension für Syntax-Highlighting.
+
+```
+
+```
