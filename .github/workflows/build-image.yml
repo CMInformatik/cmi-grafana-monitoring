@@ -3,6 +3,8 @@ name: Build and push Docker image
 on:
   push:
     branches: [master]
+    paths:
+      - "azure_grafana_agent/**"
   workflow_dispatch:
 
 jobs:
