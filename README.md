@@ -48,7 +48,3 @@ Der Grafana Agent flow nutzt als Konfigurations-Sprache eine Eigenentwicklung vo
 ## Tooling
 
 Zum aktuellen Zeitpunkt existiert für River kein wirkliches Tooling. In der [folgenden Repository](https://github.com/rfratto/vscode-river) befindet sich eine basic VSCode Extension für Syntax-Highlighting.
-
-```
-
-```
