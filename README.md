@@ -48,3 +48,9 @@ Der Grafana Agent flow nutzt als Konfigurations-Sprache eine Eigenentwicklung vo
 ## Tooling
 
 Zum aktuellen Zeitpunkt existiert für River kein wirkliches Tooling. In der [folgenden Repository](https://github.com/rfratto/vscode-river) befindet sich eine basic VSCode Extension für Syntax-Highlighting.
+
+## CI/CD
+
+### Grafana River Formatter
+
+Dieser Action such die Repo nach allen Dateien mit einer .river Endung ab und formatiert diese mit dem offiziellen River Formatter. Die Formatierten Datein werden anschliessend wieder in den aktiven Branch gepusht.
