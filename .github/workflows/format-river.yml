@@ -37,7 +37,7 @@ jobs:
           river_binary=$(find . -type f -name "riverfmt_linux_amd64")
           river_files=$(find . -type f -name "*.river")
           for river_file in $river_files; do
-            $river_binary fmt -f $river_file
+            $river_binary fmt --write $river_file
           done
 
       - name: Commit formatted River Files
