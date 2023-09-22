@@ -35,8 +35,13 @@ jobs:
       - name: Format River Files
         run: |
           river_binary=$(find . -type f -name "riverfmt_linux_amd64")
+          echo "Found River Binary: $river_binary"
+
           river_files=$(find . -type f -name "*.river")
+          echo "Found River Files: $river_files"
+
           for river_file in $river_files; do
+            echo "Formatting River File: $river_file"
             $river_binary -w $river_file
           done
 
