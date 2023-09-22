@@ -29,3 +29,7 @@ Der Collector stellt eine Opentelemetry-Schnittstelle bereit. Diese hört auf de
 ## Grafana Agent River Module
 
 Der Grafana Agent flow nutzt als Konfigurations-Sprache eine Eigenentwicklung von Grafana namens River. River erlaubt das Auslagern von Konfigurationen in sogenannte Module. Im Ordner `modules` befinden sich einige solche Module, die in verschiedenen Umgebungen verwendet werden (UMB, Netrics, Azure usw.). Genauere Informationen zu den Modulen können den jeweiligen Readme-Dateien entnommen werden. Weitere Informationen bezüglich Grafana Agent Flow und River könenn dem [folgenden Link](https://grafana.com/docs/agent/latest/flow/) entnommen werden.
+
+## Tooling
+
+Zum aktuellen Zeitpunkt existiert für River kein wirkliches Tooling. In der [folgenden Repository](https://github.com/rfratto/vscode-river) befindet sich eine basic VSCode Extension für Syntax-Highlighting.
