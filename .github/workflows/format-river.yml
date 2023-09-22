@@ -1,0 +1,48 @@
+name: "Format Grafana River Files"
+on:
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  terraform:
+    name: "Format River Files"
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Download River Formatter
+        uses: robinraju/release-downloader@v1.8
+        with:
+          latest: true
+          fileName: "riverfmt_linux_amd64.tar.gz"
+
+      - name: Unpack River Formatter
+        run: tar -xzf riverfmt_linux_amd64.tar.gz
+
+      - name: Format River Files
+        run: |
+          river_files=$(find . -type f -name "*.river")
+          for river_file in $river_files; do
+          riverfmt_linux_amd64 fmt $river_file
+          done
+
+      - name: Commit formatted River Files
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "Format Grafana River Files"
+          file_pattern: "*.river"
+          commit_user_name: "river-formatter-bot"
+          commit_user_email: "operations@cmiag.ch"
+          commit_author: "river-formatter-bot <operations@cmiag.ch>"
