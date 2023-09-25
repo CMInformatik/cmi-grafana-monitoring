@@ -50,38 +50,6 @@ export "agent_logs_receiver" {
 }
 
 /********************************************
- * OPEN TELEMTRY RESOURCES
- ********************************************/
-
-otelcol.receiver.otlp "default" {
-	grpc { }
-
-	http { }
-
-	output {
-		metrics = [otelcol.processor.batch.default.input]
-		logs    = [otelcol.processor.batch.default.input]
-		traces  = [otelcol.processor.batch.default.input]
-	}
-}
-
-otelcol.processor.batch "default" {
-	output {
-		metrics = [otelcol.exporter.prometheus.default.input]
-		logs    = [otelcol.exporter.loki.default.input]
-		traces  = [module.git.grafana_cloud.exports.traces_receiver]
-	}
-}
-
-otelcol.exporter.loki "default" {
-	forward_to = [loki.relabel.add_default_lables.receiver]
-}
-
-otelcol.exporter.prometheus "default" {
-	forward_to = [prometheus.relabel.add_default_labels.receiver]
-}
-
-/********************************************
  * RELABELING RESOURCES
  ********************************************/
 
