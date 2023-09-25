@@ -114,16 +114,15 @@ discovery.relabel "os_metrics" {
 	}
 }
 
-
 module.git "otelcol" {
 	repository = "https://github.com/CMInformatik/cmi-grafana-monitoring.git"
 	path       = "modules/opentelemetry_receiver/module.river"
 	revision   = "<replace_branch_name>"
 
 	arguments {
-		otelcol_metrics_receiver            = module.git.base_module.exports.metrics_receiver
-		otelcol_logs_receiver             = module.git.base_module.exports.logs_receiver
-		otelcol_traces_receiver       = module.git.base_module.exports.traces_receiver
+		otelcol_metrics_receiver = module.git.base_module.exports.metrics_receiver
+		otelcol_logs_receiver    = module.git.base_module.exports.logs_receiver
+		otelcol_traces_receiver  = module.git.base_module.exports.traces_receiver
 	}
 }
 
