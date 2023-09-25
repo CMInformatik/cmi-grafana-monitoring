@@ -1,24 +1,3 @@
-/********************************************
- * File Scrape Target Collector
-
- The following module can be used to get scrape targets for Windows, GrafanaAgent and MSSQL Metrics from a file.
- The file containing the scrape targets should be in the following format:
- [
-    {
-      "targets": [ "localhost:12345"],
-      "labels": {
-        "instance": "CMIDAPWEB02"
-      }
-    },
-    {
-      "targets": [ "10.130.11.14:12345" ],
-      "labels": {
-        "instance": "cmidaprelay01"
-      }
-    }
-]
- ********************************************/
-
 argument "windows_targets_file_path" { }
 
 argument "mssql_targets_file_path" { }
