@@ -28,6 +28,6 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
-          file: grafana_collector_container/Dockerfile
+          context: "{{defaultContext}}:grafana_collector_container"
           push: true
           tags: ghcr.io/cminformatik/cmi-grafana-agent:latest
