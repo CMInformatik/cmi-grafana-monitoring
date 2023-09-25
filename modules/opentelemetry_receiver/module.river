@@ -1,3 +1,10 @@
+argument "otelcol_metrics_receiver" {}
+
+argument "otelcol_logs_receiver" {}
+
+argument "otelcol_traces_receiver" {}
+
+
 otelcol.receiver.otlp "default" {
 	grpc { }
 
@@ -14,14 +21,14 @@ otelcol.processor.batch "default" {
 	output {
 		metrics = [otelcol.exporter.prometheus.default.input]
 		logs    = [otelcol.exporter.loki.default.input]
-		traces  = [module.git.grafana_cloud.exports.traces_receiver]
+		traces  = [argument.otelcol_traces_receiver]
 	}
 }
 
 otelcol.exporter.loki "default" {
-	forward_to = [loki.relabel.add_default_lables.receiver]
+	forward_to = [argument.otelcol_logs_receiver]
 }
 
 otelcol.exporter.prometheus "default" {
-	forward_to = [prometheus.relabel.add_default_labels.receiver]
+	forward_to = [argument.otelcol_metrics_receiver]
 }
