@@ -1,12 +1,4 @@
 /********************************************
- * Grafana Collector Base Configuration
-
- The following configuration functions as base configuration for all Grafana Collectors operated by CM Informatik AG.
- Currently, the module exposes a metrics, logs and traces receiver for the CMI Grafana Cloud instance.
- The default instance is cminfromatik, but you can change it by setting the stack_name argument.
- ********************************************/
-
-/********************************************
  * ARGUMENTS
  ********************************************/
 
