@@ -5,9 +5,15 @@ argument "otelcol_logs_receiver" { }
 argument "otelcol_traces_receiver" { }
 
 otelcol.receiver.otlp "default" {
-	grpc { }
+	grpc {
+		endpoint         = "0.0.0.0:4317"
+		transport        = "tcp"
+		read_buffer_size = "1024KiB"
+	}
 
-	http { }
+	http {
+		endpoint = "0.0.0.0:4318"
+	}
 
 	output {
 		metrics = [otelcol.processor.batch.default.input]
@@ -20,14 +26,14 @@ otelcol.processor.batch "default" {
 	output {
 		metrics = [otelcol.exporter.prometheus.default.input]
 		logs    = [otelcol.exporter.loki.default.input]
-		traces  = [argument.otelcol_traces_receiver]
+		traces  = [argument.otelcol_traces_receiver.value]
 	}
 }
 
 otelcol.exporter.loki "default" {
-	forward_to = [argument.otelcol_logs_receiver]
+	forward_to = [argument.otelcol_logs_receiver.value]
 }
 
 otelcol.exporter.prometheus "default" {
-	forward_to = [argument.otelcol_metrics_receiver]
+	forward_to = [argument.otelcol_metrics_receiver.value]
 }
