@@ -1,10 +1,10 @@
-argument "azure_subscription_id" {}
+argument "azure_subscription_id" { }
 
-argument "azure_client_id" {}
+argument "azure_client_id" { }
 
-argument "metrics_receiver" {}
+argument "metrics_receiver" { }
 
-argument "azure_env_name" {}
+argument "azure_env_name" { }
 
 discovery.azure "main" {
 	subscription_id = argument.azure_subscription_id.value
