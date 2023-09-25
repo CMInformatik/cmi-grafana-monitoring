@@ -4,13 +4,14 @@ logging {
 
 module.git "base_module" {
 	repository = "https://github.com/CMInformatik/cmi-grafana-monitoring.git"
-	path       = "modules/grafana-agent-uplink.river"
+	path       = "modules/grafana_agent_uplink/module.river"
 	revision   = "<replace_branch_name>"
 
 	arguments {
-		token       = "<replace_grafana_token>"
-		site        = "<replace_site_name>"
-		stack_name  = "<replace_stack_name>"
+		token            = "<replace_grafana_token>"
+		site             = "<replace_site_name>"
+		stack_name       = "<replace_stack_name>"
+		submodule_branch = "<replace_branch_name>"
 	}
 }
 

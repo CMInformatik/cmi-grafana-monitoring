@@ -1,105 +1,56 @@
-**Dokumentationsanleitung und Hilfestellung**
+# Grafana Monitoring
 
-[Komponentenfreigabe Wiki]
+Das folgende Projekt enthält alle Resourcen, die im Zusammenhang mit dem Grafana Monitoring stehen.
 
-# Offizielle Bezeichnung (eindeutig, treffend, einheitlich verwendet)
-> Kurze Beschreibung der Komponente
+## Azure Collector Container
 
-## Inhaltsverzeichnis
-* [Allgemeine Informationen](#allgemeines)
-* [Technische Informationen](#technisches)
-* [Installation & Konfiguration](#installation)
-* [Troubleshooting / Mögliche Fehlerquellen](#troubleshooting)
+Im Ordner `grafana_collector_container` befinden sich das Projekt für den Grafana Collector, der in jeder Azure Umgebung (CMI Cloud Prod, CMI Cloud Stage usw.) einmal läuft. Dieser Collector wird als Container gestartet und findet alle VMs in der angegebenen Azure Subscription. Die Authentifizierung bei Azure erfolgt dabei über eine Managed Identity der Container Instance.
 
-## Allgemeines
-* Status: In Entwicklung / Freigegeben / Wird nicht weiterentwickelt
-* Fachliche Ansprechperson: (z.B. Produktmanager)
-* Technische Ansprechperson: (z.B. Hauptentwickler)
-* Nur für speziellen Kunde: nein / ja, und zwar ...
+### Konfiguration
 
-### Aufgabe
-(Siehe [Komponentenfreigabe Wiki] für Beispiele)
+Der Container lässt sich vollständig per Env-Variablen konfigurieren. Die folgenden Variablen sind verfügbar:
 
-### Strategische_Einordnung
-(z.B. ersetzt langfristig X, sollabgelöst werden von Y, Speziallösung für Kunde XY, ...)
+| Name                  | default | Pflicht | Beschreibung                                                                                               |
+| --------------------- | :------ | ------- | ---------------------------------------------------------------------------------------------------------- |
+| GRAFANA_TOKEN         | -       | Ja      | Grafana token für die Authentifizierung bei Grafana Cloud                                                  |
+| SITE_NAME             | -       | Ja      | Name der Site in dem der Collector betreiben wird (Bspw. CMI Cloud Prod oder UMB).                         |
+| AGENT_NAME            | -       | Ja      | Name des Collector-Agent.                                                                                  |
+| AZURE_CLIENT_ID       | -       | Ja      | Client ID der Azure managed identity.                                                                      |
+| AZURE_SUBSCRIPTION_ID | -       | Ja      | Subscription-ID, die der Collector überwachen soll.                                                        |
+| AZURE_ENV_NAME        | -       | Ja      | Name des Azure Env. (Bspw. Prod oder Stage).                                                               |
+| STACK_NAME            | null    | Nein    | Name des Grafana Cloud Stack. Wenn nicht angegeben, wird der default Stack aus dem Uplink-Modul verwendet. |
+| BRANCH_NAME           | master  | Nein    | Branch von welchem die verwendeten River-Module abgerufen werden sollen.                                   |
+| LOG_LEVEL             | info    | Nein    | Log-Level des Collector-Agent.                                                                             |
 
-## Technisches
-Technische Informationen zu der Komponente.
+### OTEL-Collector
 
-### Eigenschaften
-Die Komponente erfüllt folgende Eigenschaften:
+Der Collector stellt eine Opentelemetry-Schnittstelle bereit. Diese hört auf den Ports 4317 (OTLP-GRPC) und 4318 (OTLP-HTTP). Die Schnittstelle kann genutzt werden, um Metriken, Logs und Traces an den Collector zu senden. Die Daten werden dann verarbeitet (filtering und tagging) und an den konfigurierten Grafana Cloud Stack gesendet.
 
-(falls ja, bitte Beschreibung wie/unter welchem Umständen/mit welcher Konfiguration)
+### Testen des Collectors
 
-* Stateless: nein / ja, wenn ...
-* Skalierbar/Multiinstanzfähig: nein / ja, mit Konfiguration ...
-* Mehrmandantenfähig: nein / ja, über ...
-* Proxyfähig: nein / ja, weil ...
-* Laufzeitverhalten (z.B. ein durchgängig laufender Service, ein Batch-Job, Aktivierung durch Trigger, o.ä.)
+Für die Secrets muss im Ordner `grafana_collector_container` ein Secrets file mit dem Namen `agent_secrets.env` und folgenden Inhalt angelegt werden:
 
-Sonstiges:
-(z.B. Wichtige/Kundenspezifische Informationen)
+```bash
+GRAFANA_TOKEN=<grafana_token>
+```
 
-### Abhängigkeiten
-Folgende Services verwendet die Komponente:
+Um den Collector lokal zu testen, kann diser anschliessend mit dem folgenden Befehl gebaut und gestartet werden:
 
-| Service       | Version   | Anbindung  | Protokoll | Standardports | Verfügbarkeit | Fehlertoleranzklasse   |
-| ------------- | --------- | ---------- | --------- | ------------- | ------------- | ---------------------- |
-| DB-Service    | 10.4      | persistent | tcp       | 5432          | muss / start  | Absturz                |
-| Service Int   | >= V20.0  | on request | http/s    | 10003,10004   | muss          | Reconnect              |
-| Service Ext   | 1.0.1     | on start   | http/s    | 80/443        | kann          | Funktionseinschränkung |
+```bash
+docker build --tag "grafana_collector_local_image:latest" .\grafana_collector_container\
+docker compose -f .\grafana_collector_container\docker-compose.yaml up
+```
 
-#### Fehlertoleranz
-Wie verhält sich die Komponente, wenn der Service nicht verfügbar ist?
-Grundsätzlich sollte eine Komponente so unabhängig wie möglich mit externen Services umgehen.
-Mögliche Werte wären hierbei: "Absturz", "Reconnect", "Funktionseinschränkung"
+## Grafana Agent River Module
 
-### Sequenzdiagramm 
-Komplexe Kommunikationswege einfach aufzuzeigen (falls sie für das Verständnis notwendig sind):
+Der Grafana Agent flow nutzt als Konfigurations-Sprache eine Eigenentwicklung von Grafana namens River. River erlaubt das Auslagern von Konfigurationen in sogenannte Module. Im Ordner `modules` befinden sich einige solche Module, die in verschiedenen Umgebungen verwendet werden (UMB, Netrics, Azure usw.). Genauere Informationen zu den Modulen können den jeweiligen Readme-Dateien entnommen werden. Weitere Informationen bezüglich Grafana Agent Flow und River könenn dem [folgenden Link](https://grafana.com/docs/agent/latest/flow/) entnommen werden.
 
-![Sequenzdiagramm](./docs/Sequenzdiagramm.png)
+## Tooling
 
-### Komponentendiagramm 
- Komplexe Abhängigkeiten einfach aufzuzeigen (falls sie für das Verständnis notwendig sind):
+Zum aktuellen Zeitpunkt existiert für River kein wirkliches Tooling. In der [folgenden Repository](https://github.com/rfratto/vscode-river) befindet sich eine basic VSCode Extension für Syntax-Highlighting.
 
-![Komponentendiagramm](./docs/Komponentendiagramm.png)
+## CI/CD
 
-### Technologiestack
-Folgende Technologien werden eingesetzt:
-* ASP.NET Core 3.1
-* Angular 8
-* Node.js 12
-* ...
+### Grafana River Formatter
 
-## Installation
-Informationen zur Installation der Komponente.
-
-### Systemvoraussetzungen
-Folgende Komponenten müssen auf dem System installiert/vorhanden sein:
-* ASP.NET Core 3.1 Runtime
-* IIS Feature Rewrite Module
-* ...
-
-### Installationsanleitung
-[Vollständige Anleitung zur Installation der Komponente inklusive benötigter Services.](./docs/Installation.md)
-
-### Entwicklerhinweise
-Hinweise zur Einrichtung der Entwicklungsumgebung und Debug-Builds.
-
-### Konfigurationsmöglichkeiten
-Folgende Konfigurationen sind möglich und können in der Konfigurationsdatei xy.config oder über Kommandozeilenparameter/Umgebungsvariablen gesetzt werden.
-
-| Name       | Beschreibung                         | obligatorisch  | Standardwert | Erlaubte Werte
-| ---------- | ------------------------------------ | -------------- | ------------ | -------------
-| PGSQL_HOST | FQDN-Hostname für PostgreSQL-Server  | ja             | -            | URI
-| Port       | Port auf den sich der Service bindet | nein           | 80           | 1025-65534         
-| TEMPPATH   | Pfad für temporäre Dateien           | nein           | ./tmp/       | Existierende Pfadangabe
-| Debug      | Debug-Modus ein/ausschalten          | nein           | false        | true/false       
-
-Grundsätzlich sollten hier vor allem Umgebungskonfigurationen (Pfade, URLS/Ports, ConnectionStrings, ...) definiert werden. Fachliche Konfigurationen sollten innerhalb der Komponente vorgenommen werden können. Es sollte nur als obligatorisch definiert werden was zwingend notwend ist. Ansonsten sollen sinnvolle Standardwerte im Code gesetzt werden, die bei Bedarf über die Konfiguration überschrieben werden.
-
-## Troubleshooting
-Mögliche Fehlerquellen sind ...
-
-
-[Komponentenfreigabe Wiki]: https://cminformatik.atlassian.net/wiki/spaces/CMIBetrieb/pages/1827700770/Komponentenfreigabe
+Dieser Action such die Repo nach allen Dateien mit einer .river Endung ab und formatiert diese mit dem offiziellen River Formatter. Die Formatierten Datein werden anschliessend wieder in den aktiven Branch gepusht.

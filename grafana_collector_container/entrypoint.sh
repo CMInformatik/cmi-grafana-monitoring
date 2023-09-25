@@ -20,11 +20,11 @@ function replaceGrafanaAgentConfigValue() {
         fi
         if [ -z "$defaultValue" ]; then
             echo "Environment variable $envVarName is not set. Removing config key $configKey from grafana config file..."
-            sed -i "/${configKey}/d" $grafanaAgentConfigPath
+            sed -i "s|${configKey}|d" $grafanaAgentConfigPath
             return
         fi
         echo "Environment variable $envVarName is not set. Using default value $defaultValue"
-        sed -i "s/${configKey}/${defaultValue}/g" $grafanaAgentConfigPath
+        sed -i "s|${configKey}|${defaultValue}|g" $grafanaAgentConfigPath
         return
     fi
     envVarValueLogValue=$envVarValue
@@ -33,7 +33,7 @@ function replaceGrafanaAgentConfigValue() {
     fi
     configValue=${!envVarName}
     echo "Replacing config value for $configKey with $envVarValueLogValue"
-    sed -i "s/${configKey}/${configValue}/g" $grafanaAgentConfigPath
+    sed -i "s|${configKey}|${configValue}|g" $grafanaAgentConfigPath
 }
 
 # Entry Point

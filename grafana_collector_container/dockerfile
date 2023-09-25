@@ -1,0 +1,9 @@
+FROM grafana/agent:latest
+
+COPY ./entrypoint.sh /bin/entrypoint.sh
+COPY ./config.river /etc/agent/config.river
+
+RUN chmod +x /bin/entrypoint.sh
+
+ENTRYPOINT ["/bin/entrypoint.sh"]
+

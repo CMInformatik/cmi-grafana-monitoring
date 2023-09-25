@@ -1,0 +1,33 @@
+argument "otelcol_metrics_receiver" { }
+
+argument "otelcol_logs_receiver" { }
+
+argument "otelcol_traces_receiver" { }
+
+otelcol.receiver.otlp "default" {
+	grpc { }
+
+	http { }
+
+	output {
+		metrics = [otelcol.processor.batch.default.input]
+		logs    = [otelcol.processor.batch.default.input]
+		traces  = [otelcol.processor.batch.default.input]
+	}
+}
+
+otelcol.processor.batch "default" {
+	output {
+		metrics = [otelcol.exporter.prometheus.default.input]
+		logs    = [otelcol.exporter.loki.default.input]
+		traces  = [argument.otelcol_traces_receiver]
+	}
+}
+
+otelcol.exporter.loki "default" {
+	forward_to = [argument.otelcol_logs_receiver]
+}
+
+otelcol.exporter.prometheus "default" {
+	forward_to = [argument.otelcol_metrics_receiver]
+}
