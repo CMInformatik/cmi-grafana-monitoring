@@ -1,9 +1,8 @@
-argument "otelcol_metrics_receiver" {}
+argument "otelcol_metrics_receiver" { }
 
-argument "otelcol_logs_receiver" {}
+argument "otelcol_logs_receiver" { }
 
-argument "otelcol_traces_receiver" {}
-
+argument "otelcol_traces_receiver" { }
 
 otelcol.receiver.otlp "default" {
 	grpc { }
