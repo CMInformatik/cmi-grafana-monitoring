@@ -1,0 +1,15 @@
+argument "base_module_exports" {}
+
+argument "branch" {}
+
+module.git "otelcol" {
+	repository = "https://github.com/CMInformatik/cmi-grafana-monitoring.git"
+	path       = "modules/opentelemetry_receiver/module.river"
+	revision   = argument.branch.value
+
+	arguments {
+		otelcol_metrics_receiver = argument.base_module_exports.value.metrics_receiver
+		otelcol_logs_receiver    = argument.base_module_exports.value.logs_receiver
+		otelcol_traces_receiver  = argument.base_module_exports.value.traces_receiver
+	}
+}

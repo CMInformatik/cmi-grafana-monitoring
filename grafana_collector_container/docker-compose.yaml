@@ -9,11 +9,10 @@ services:
       AGENT_NAME: Local-Testing-Agent
       AZURE_CLIENT_ID: this-is-just-a-placeholder
       LOG_LEVEL: debug
-      BRANCH_NAME: "master"
       AZURE_SUBSCRIPTION_ID: 12345678-1234-1234-1234-123456789012
     ports:
       - 12345:12345
       - 4317:4317
       - 4318:4318
     env_file:
-      - .\agent_secrets.env
+      - .\local_configuration.env
