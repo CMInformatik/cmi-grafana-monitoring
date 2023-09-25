@@ -10,9 +10,14 @@ services:
       AZURE_CLIENT_ID: this-is-just-a-placeholder
       LOG_LEVEL: debug
       AZURE_SUBSCRIPTION_ID: 12345678-1234-1234-1234-123456789012
+      ENABLE_AZURE_AUTODISCOVERY: true
+      ENABLE_OPENTELEMETRY_RECEIVER: true
+      ENABLE_PUSH_GATEWAY: true
+
     ports:
       - 12345:12345
       - 4317:4317
       - 4318:4318
+      - 9091:9091
     env_file:
       - .\local_configuration.env

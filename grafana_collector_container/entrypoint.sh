@@ -27,8 +27,9 @@ handle_env_variable "AGENT_NAME"
 handle_env_variable "STACK_NAME" "cminformatik"
 handle_env_variable "BRANCH_NAME" "master"
 handle_env_variable "LOG_LEVEL" "info"
-handle_env_variable "ENABLE_OPENTELEMETRY_RECEIVER" 1
-handle_env_variable "ENABLE_AZURE_AUTODISCOVERY" 1
+handle_env_variable "ENABLE_OPENTELEMETRY_RECEIVER" true
+handle_env_variable "ENABLE_AZURE_AUTODISCOVERY" true
+handle_env_variable "ENABLE_PUSH_GATEWAY" false
 
 if [ -f "$grafanaAgentConfigPath" ]; then
     # Remove default config file if it exists inside the container
@@ -72,7 +73,7 @@ echo "Grafana Agent base configuration set."
 
 
 # check and setup azure auto discovery for vms
-if  [  "$ENABLE_AZURE_AUTODISCOVERY" == 1 ]; then
+if  [  "$ENABLE_AZURE_AUTODISCOVERY" == true ]; then
     echo "Azure auto-discovery enabled, checking requirements..."
     
     handle_env_variable "AZURE_CLIENT_ID"
@@ -101,7 +102,7 @@ fi
 
 
 # add open telemetry receiver if not disabled
-if [  "$ENABLE_OPENTELEMETRY_RECEIVER" == 1 ]; then
+if [  "$ENABLE_OPENTELEMETRY_RECEIVER" == true ]; then
     echo "Configuring Open Telemetry Receiver..."
 cat << EOF >> $grafanaAgentConfigPath
 module.file "otelcol" {
@@ -115,6 +116,25 @@ EOF
     echo "Open Telemetry Receiver configured."
 else
     echo "Open Telemetry Receiver configuration disabled."
+fi
+
+# ToDo: Implement authentication for push gateway
+# add configuration for the push gateway and run the push gateway binary in the background if enabled
+if [ "$ENABLE_PUSH_GATEWAY" == true ]; then
+    echo "Configuring Push Gateway..."
+cat << EOF >> $grafanaAgentConfigPath
+prometheus.scrape "push_gateway" {
+	targets    = [{"__address__" = "localhost:9091", "__metrics_path__" = "/metrics", "job" = "integrations/generic-push", "instance" = "$AGENT_NAME"}]
+    honor_labels = true
+	forward_to = [
+		module.git.base_module.exports.metrics_receiver,
+	]
+}
+EOF
+    echo "Push Gateway configuration set, starting Push Gateway..."
+    /bin/pushgateway&
+else
+    echo "Push Gateway configuration disabled."
 fi
 
 

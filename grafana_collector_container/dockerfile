@@ -27,6 +27,7 @@ RUN  useradd -m grafana-agent \
     && chmod +x /bin/entrypoint.sh \
     && chmod +x /bin/pushgateway 
 
+EXPOSE 9091
 
 USER grafana-agent
 ENTRYPOINT ["/bin/entrypoint.sh"]

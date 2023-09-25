@@ -18,8 +18,9 @@ Der Container lässt sich vollständig per Env-Variablen konfigurieren. Die folg
 | STACK_NAME                    | cminformatik | Nein    | Name des Grafana Cloud Stack. Wenn nicht angegeben, wird der default Stack aus dem Uplink-Modul verwendet. |
 | BRANCH_NAME                   | master       | Nein    | Branch von welchem die verwendeten River-Module abgerufen werden sollen.                                   |
 | LOG_LEVEL                     | info         | Nein    | Log-Level des Collector-Agent.                                                                             |
-| ENABLE_OPENTELEMETRY_RECEIVER | 1            | Nein    | Soll der OpenTelemetry Receiver aktiviert werden? 0 = Nein, 1 = Ja.                                        |
-| ENABLE_AZURE_AUTODISCOVERY    | 1            | Nein    | Soll die Azure Auto-Discovery Integration aktiviert werden? 0 = Nein, 1 = Ja.                              |
+| ENABLE_OPENTELEMETRY_RECEIVER | true         | Nein    | Soll der OpenTelemetry Receiver aktiviert werden? true = Ja, false = Nein.                                 |
+| ENABLE_AZURE_AUTODISCOVERY    | true         | Nein    | Soll die Azure Auto-Discovery Integration aktiviert werden? true = Ja, false = Nein.                       |
+| ENABLE_PUSH_GATEWAY           | false        | Nein    | Soll der Push Gateway konfiguriert und gestartet werden? true = Ja, false = Nein.                          |
 
 ### OTEL-Collector
 
