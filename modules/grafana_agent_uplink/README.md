@@ -25,3 +25,25 @@ Das Modul exportiert die folgenden Variablen:
 | logs_receiver       | Endpunkt zum senden von Logs an Grafana Cloud.                                                                                    |
 | traces_receiver     | Endpunk zum senden von Traces an Grafana Cloud.                                                                                   |
 | agent_logs_receiver | Log-Endpunkt für Grafana Agent Logs. Verarbeitet die Logs zusätzlich und sendet diese anschliessend an den internen logs_receiver |
+
+## Beispiel
+
+```bash
+module.git "base_module" {
+  repository = "https://github.com/CMInformatik/cmi-grafana-monitoring.git"
+  path       = "modules/grafana_agent_uplink/module.river"
+  revision   = "master"
+  arguments {
+    token            = "<our_token>"
+    site             = "<your_site_name>"
+  }
+}
+
+prometheus.scrape "integrations" {
+  targets = <your_scrape_targets>
+  forward_to = [
+    module.git.base_module.exports.metrics_receiver,
+  ]
+}
+
+```
