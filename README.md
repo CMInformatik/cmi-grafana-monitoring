@@ -18,17 +18,17 @@ Der Container lässt sich vollständig per Env-Variablen konfigurieren. Die folg
 | STACK_NAME                    | cminformatik | Nein    | Name des Grafana Cloud Stack. Wenn nicht angegeben, wird der default Stack aus dem Uplink-Modul verwendet. |
 | BRANCH_NAME                   | master       | Nein    | Branch von welchem die verwendeten River-Module abgerufen werden sollen.                                   |
 | LOG_LEVEL                     | info         | Nein    | Log-Level des Collector-Agent.                                                                             |
-| ENABLE_OPENTELEMETRY_RECEIVER | true         | Nein    | Soll der OpenTelemetry Receiver aktiviert werden? true = Ja, false = Nein.                                 |
-| ENABLE_AZURE_AUTODISCOVERY    | true         | Nein    | Soll die Azure Auto-Discovery Integration aktiviert werden? true = Ja, false = Nein.                       |
+| ENABLE_OPENTELEMETRY_RECEIVER | false        | Nein    | Soll der OpenTelemetry Receiver aktiviert werden? true = Ja, false = Nein.                                 |
+| ENABLE_AZURE_AUTODISCOVERY    | false        | Nein    | Soll die Azure Auto-Discovery Integration aktiviert werden? true = Ja, false = Nein.                       |
 | ENABLE_PUSH_GATEWAY           | false        | Nein    | Soll der Push Gateway konfiguriert und gestartet werden? true = Ja, false = Nein.                          |
 
 ### OTEL-Collector
 
-Wird `ENABLE_OPENTELEMETRY_RECEIVER = 1` gesetzt, wird ein OpenTelemetry Receiver konfiguriert und gestartet. Diese hört auf den Ports 4317 (OTLP-GRPC) und 4318 (OTLP-HTTP). Die Schnittstelle kann genutzt werden, um Metriken, Logs und Traces an den Collector zu senden. Die Daten werden dann verarbeitet (filtering und tagging) und an den konfigurierten Grafana Cloud Stack gesendet.
+Wird `ENABLE_OPENTELEMETRY_RECEIVER = true` gesetzt, wird ein OpenTelemetry Receiver konfiguriert und gestartet. Diese hört auf den Ports 4317 (OTLP-GRPC) und 4318 (OTLP-HTTP). Die Schnittstelle kann genutzt werden, um Metriken, Logs und Traces an den Collector zu senden. Die Daten werden dann verarbeitet (filtering und tagging) und an den konfigurierten Grafana Cloud Stack gesendet.
 
 ### Azure Auto-Discorvery
 
-Wird `ENABLE_AZURE_AUTODISCOVERY = 1` gesetz, stehen ausserdem die folgenden Einstellungen zur Verfügung:
+Wird `ENABLE_AZURE_AUTODISCOVERY = true` gesetz, sucht der Collector automatisch nach VMs in der angegebenen Azure Subscription und scrapet den Agent und Windows/Linux Metrik-Endpunkt. Für die Integration sind die folgenden Einstellungen notwendig:
 
 | Name                  | default | Pflicht | Beschreibung                                        |
 | --------------------- | :------ | ------- | --------------------------------------------------- |
