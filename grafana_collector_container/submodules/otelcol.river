@@ -1,6 +1,6 @@
-argument "base_module_exports" {}
+argument "base_module_exports" { }
 
-argument "branch" {}
+argument "branch" { }
 
 module.git "otelcol" {
 	repository = "https://github.com/CMInformatik/cmi-grafana-monitoring.git"
