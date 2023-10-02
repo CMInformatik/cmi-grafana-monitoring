@@ -1,7 +1,9 @@
 version: "3"
 services:
   grafana_agent:
-    image: grafana_collector_local_image:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     environment:
       STACK_NAME: cminformatiktest
       AZURE_ENV_NAME: "Test"
