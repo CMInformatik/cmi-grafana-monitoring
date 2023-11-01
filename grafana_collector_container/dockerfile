@@ -1,9 +1,36 @@
-FROM grafana/agent:latest
+ARG grafana_Image_tag=latest
+ARG pushgateway_version="1.6.2"
+
+# This stage is only to download the push-gateway binary
+FROM ubuntu:latest AS pushgateway-downloader
+RUN apt-get update \
+    && apt-get install wget -y \
+    && wget "https://github.com/prometheus/pushgateway/releases/download/v1.6.2/pushgateway-1.6.2.linux-amd64.tar.gz" \
+    && tar -xvf pushgateway-1.6.2.linux-amd64.tar.gz \
+    && mv pushgateway-1.6.2.linux-amd64/pushgateway /bin/pushgateway
+
+
+# Create the actula grafana agent image with the config, entrypoint-script and the push-gateway binary
+FROM grafana/agent:$grafana_Image_tag AS releases
 
 COPY ./entrypoint.sh /bin/entrypoint.sh
-COPY ./config.river /etc/agent/config.river
+COPY ./submodules /etc/agent/submodules
+COPY --from=pushgateway-downloader /bin/pushgateway /bin/pushgateway
 
-RUN chmod +x /bin/entrypoint.sh
+# The Grafana Agent image is running as root by default. To imporve security, we create a new user and change the ownership of the files and directories the agent needs to run.
+RUN  useradd -m grafana-agent \
+    && chown grafana-agent /bin/entrypoint.sh \
+    && chown grafana-agent /bin/pushgateway \
+    && chown grafana-agent /etc/agent \
+    && mkdir /data-agent \
+    && chown grafana-agent /data-agent \
+    && chmod +x /bin/entrypoint.sh \
+    && chmod +x /bin/pushgateway 
 
+EXPOSE 9091
+EXPOSE 9998
+EXPOSE 9999
+
+USER grafana-agent
 ENTRYPOINT ["/bin/entrypoint.sh"]
 

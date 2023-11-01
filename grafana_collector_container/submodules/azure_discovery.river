@@ -1,26 +1,17 @@
-logging {
-	level = "<replace_log_level>"
-}
+argument "azure_subscription_id" { }
 
-module.git "base_module" {
-	repository = "https://github.com/CMInformatik/cmi-grafana-monitoring.git"
-	path       = "modules/grafana_agent_uplink/module.river"
-	revision   = "<replace_branch_name>"
+argument "azure_client_id" { }
 
-	arguments {
-		token            = "<replace_grafana_token>"
-		site             = "<replace_site_name>"
-		stack_name       = "<replace_stack_name>"
-		submodule_branch = "<replace_branch_name>"
-	}
-}
+argument "metrics_receiver" { }
+
+argument "azure_env_name" { }
 
 discovery.azure "main" {
-	subscription_id = "<replace_azure_subscription_id>"
+	subscription_id = argument.azure_subscription_id.value
 	port            = 12345
 
 	managed_identity {
-		client_id = "<replace_azure_client_id>"
+		client_id = argument.azure_client_id.value
 	}
 }
 
@@ -36,7 +27,7 @@ discovery.relabel "check_monitoring_lables" {
 	rule {
 		action        = "keep"
 		source_labels = ["__meta_azure_machine_tag_Environment"]
-		regex         = "<replace_azure_env_name>"
+		regex         = argument.azure_env_name.value
 	}
 }
 
@@ -114,28 +105,9 @@ discovery.relabel "os_metrics" {
 	}
 }
 
-module.git "otelcol" {
-	repository = "https://github.com/CMInformatik/cmi-grafana-monitoring.git"
-	path       = "modules/opentelemetry_receiver/module.river"
-	revision   = "<replace_branch_name>"
-
-	arguments {
-		otelcol_metrics_receiver = module.git.base_module.exports.metrics_receiver
-		otelcol_logs_receiver    = module.git.base_module.exports.logs_receiver
-		otelcol_traces_receiver  = module.git.base_module.exports.traces_receiver
-	}
-}
-
 prometheus.scrape "default_metrics" {
 	targets    = concat(discovery.relabel.grafana_agent_job.output, discovery.relabel.os_metrics.output)
 	forward_to = [
-		module.git.base_module.exports.metrics_receiver,
-	]
-}
-
-prometheus.scrape "grafana_agent" {
-	targets    = [{"__address__" = "localhost:12345", "job" = "integrations/agent", "instance" = "<replace_agent_name>"}]
-	forward_to = [
-		module.git.base_module.exports.metrics_receiver,
+		argument.metrics_receiver.value,
 	]
 }
