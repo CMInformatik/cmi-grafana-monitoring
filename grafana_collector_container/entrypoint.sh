@@ -168,7 +168,7 @@ else
 fi
 
 # Check if the environment variable exists and is not empty
-if [ -n "$ENABLE_POSTGRES_MONITORING" ]; then
+if [ "$ENABLE_POSTGRES_MONITORING" == true ]; then
 echo "Postgres Monitoring enabled, checking requirements..."
 handle_env_variable "POSTGRES_DATA_SOURCES"
 
