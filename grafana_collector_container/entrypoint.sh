@@ -31,6 +31,7 @@ handle_env_variable "ENABLE_OPENTELEMETRY_RECEIVER" true
 handle_env_variable "ENABLE_AZURE_AUTODISCOVERY" true
 handle_env_variable "ENABLE_PUSH_GATEWAY" false
 handle_env_variable "ENABLE_FORWARDERS" false
+handle_env_variable "ENABLE_POSTGRES_MONITORING" false
 
 if [ -f "$grafanaAgentConfigPath" ]; then
     # Remove default config file if it exists inside the container
@@ -165,6 +166,59 @@ EOF
 else
     echo "Loki and Prometheus Forwarder disabled."
 fi
+
+# Check if the environment variable exists and is not empty
+if [ -n "$ENABLE_POSTGRES_MONITORING" ]; then
+echo "Postgres Monitoring enabled, checking requirements..."
+handle_env_variable "POSTGRES_DATA_SOURCES"
+
+  # Split the POSTGRES_DATA_SOURCES by newline and format it as an array
+  IFS=',' read -ra DATA_SOURCE_NAMES_ARRAY <<< "$POSTGRES_DATA_SOURCES"
+ 
+  # Create a string with the format [value1, value2, ...]
+  for value in "${DATA_SOURCE_NAMES_ARRAY[@]}"; do
+    # parser the following string postgresql://username:password@localhost:5432/database_name to get the server name
+    # and the database name
+    # remove the postgresql:// from the string
+    value_without_postgres=${value#"postgresql://"}
+    # split the string by @ to get the server name and the database name
+    IFS='@' read -ra intitial_split_array <<< "$value_without_postgres"
+    IFS=':' read -ra username_and_password_array <<< "${intitial_split_array[0]}"
+    username=${username_and_password_array[0]}
+    password=${username_and_password_array[1]}
+    IFS='/' read -ra server_port_and_database_array <<< "${intitial_split_array[1]}"
+    database_name=${server_port_and_database_array[1]}
+    server_and_port=${server_port_and_database_array[0]}
+    IFS=':' read -ra server_and_port_array <<< "$server_and_port"
+    server_name=${server_and_port_array[0]}
+    server_port=${server_and_port_array[1]}
+    
+    echo "Creating Postgres Scrape Configuration for $server_name with Username $username on Port $server_port and Database $database_name"
+    DATA_SOURCE_NAME="[\"$value\"]"
+      cat << EOF >> $grafanaAgentConfigPath
+prometheus.exporter.postgres "postgres_$server_name" {
+  data_source_names = $DATA_SOURCE_NAME
+  autodiscovery {
+    enabled            = true
+    database_allowlist = ["frontend_app", "backend_app"]
+  }
+}
+
+prometheus.scrape "prometheus_scraper_postgres_$server_name" {
+  targets    = prometheus.exporter.postgres.postgres_$server_name.targets
+  forward_to = [
+    module.git.base_module.exports.metrics_receiver,
+    ]
+}
+EOF
+  done
+
+ 
+  echo "Postgres Configuration added to $grafanaAgentConfigPath"
+else
+  echo "Environment variable POSTGRES_DATA_SOURCES is not set or empty."
+fi
+
 
 
 # Set Environment Variable AGENT_MODE to flow since we want to Run the Agent in Flow Mode

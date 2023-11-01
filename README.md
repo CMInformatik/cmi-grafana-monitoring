@@ -22,6 +22,7 @@ Der Container lässt sich vollständig per Env-Variablen konfigurieren. Die folg
 | ENABLE_AZURE_AUTODISCOVERY    | false        | Nein    | Soll die Azure Auto-Discovery Integration aktiviert werden? true = Ja, false = Nein.                       |
 | ENABLE_PUSH_GATEWAY           | false        | Nein    | Soll der Push Gateway konfiguriert und gestartet werden? true = Ja, false = Nein.                          |
 | ENABLE_FORWARDERS             | false        | Nein    | Wenn diese Einstellung auf true gesetzt wird, wird der Prometheus und Loki forwarder aktiviert.            |
+| ENABLE_POSTGRES_MONITORING    | false        | Nein    | Wenn diese Einstellung auf true gesetzt wird, wird die Überwachung von Postgres Server aktiviert.          |
 
 ### OTEL-Collector
 
@@ -45,6 +46,16 @@ Mit der Variabel `ENABLE_PUSH_GATEWAY = true` kann ein Push Gateway gestartet we
 
 Mit der Einstellung `ENABLE_FORWARDERS = true` werden die Prometheus und Loki Forwarder konfiguriert und gestartet. Diese hören auf den Ports 9998 (Prometheus) und 9999 (Loki). Die Schnittstellen können genutzt werden, um Metriken und Logs an den Collector zu senden. Die Daten werden dann verarbeitet (filtering und tagging) und an den konfigurierten Grafana Cloud Stack gesendet.
 
+### Postgres Monitoring
+
+Mit der Einstellung `ENABLE_POSTGRES_MONITORING = true` wird die Überwachung von Postgres Servern aktiviert. Die Konfiguration der Postgres Server erfolgt über die Env-Variable `POSTGRES_DATA_SOURCES`. Datenbanken auf den Servern werden automatisch discovered. Als Datenbank sollte somit immer `postgres` im String angegeben werden. Das folgende Beispiel zeigt die Konfiguration von zwei Postgres Servern:
+
+```bash
+POSTGRES_DATA_SOURCES="postgresql://<username>:<password>@<server_name>:5432/postgres,"postgresql://<username>:<password>@<server_name>:5432/postgres"
+```
+
+> **_NOTE:_** Der server_name muss für jedes Element eindeutig sein und das Passwort darf keine im Connection-String enthaltene Sonderzeichen enthalten (Bspw. /, : oder , ).
+
 ### Testen des Collectors
 
 Für die Secrets muss im Ordner `grafana_collector_container` ein Secrets file mit dem Namen `local_configuration.env` und folgenden Inhalt angelegt werden:
@@ -52,8 +63,6 @@ Für die Secrets muss im Ordner `grafana_collector_container` ein Secrets file m
 ```bash
 GRAFANA_TOKEN=<grafana_token>
 BRANCH_NAME=<branch_name>
-BASIC_AUTH_USER=<basic_auth_user>
-BASIC_AUTH_PASSWORD=<basic_auth_password>
 ```
 
 Um den Collector lokal zu testen, kann diser anschliessend mit dem folgenden Befehl gebaut und gestartet werden:
