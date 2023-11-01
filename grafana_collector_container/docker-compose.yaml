@@ -15,6 +15,7 @@ services:
       ENABLE_AZURE_AUTODISCOVERY: true
       ENABLE_OPENTELEMETRY_RECEIVER: true
       ENABLE_PUSH_GATEWAY: true
+      ENABLE_FORWARDERS: true
 
     ports:
       - 12345:12345

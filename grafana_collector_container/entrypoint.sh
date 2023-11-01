@@ -30,6 +30,7 @@ handle_env_variable "LOG_LEVEL" "info"
 handle_env_variable "ENABLE_OPENTELEMETRY_RECEIVER" true
 handle_env_variable "ENABLE_AZURE_AUTODISCOVERY" true
 handle_env_variable "ENABLE_PUSH_GATEWAY" false
+handle_env_variable "ENABLE_FORWARDERS" false
 
 if [ -f "$grafanaAgentConfigPath" ]; then
     # Remove default config file if it exists inside the container
@@ -135,6 +136,34 @@ EOF
     /bin/pushgateway&
 else
     echo "Push Gateway configuration disabled."
+fi
+
+if [ "$ENABLE_FORWARDERS" == true ]; then
+    echo "Configuring Loki and Prometheus Forwarder..."
+cat << EOF >> $grafanaAgentConfigPath
+loki.source.api "main" {
+    http {
+        listen_address = "0.0.0.0"
+        listen_port = 9999
+    }
+    forward_to = [
+        module.git.base_module.exports.logs_receiver,
+    ]
+}
+
+prometheus.receive_http "main" {
+  http {
+    listen_address = "0.0.0.0"
+    listen_port = 9998
+  }
+  forward_to = [
+	module.git.base_module.exports.metrics_receiver,
+  ]
+}
+EOF
+    echo "Loki and Prometheus Forwarder configuration set."
+else
+    echo "Loki and Prometheus Forwarder disabled."
 fi
 
 
