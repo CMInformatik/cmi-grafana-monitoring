@@ -90,8 +90,8 @@ cat << EOF >> $grafanaAgentConfigPath
 module.file "azure_auto_discovery" {
 	filename  = "/etc/agent/submodules/azure_discovery.river"
 	arguments {
-		azure_subscription_id = "$AZURE_CLIENT_ID"
-		azure_client_id = "$AZURE_SUBSCRIPTION_ID"
+		azure_subscription_id = "$AZURE_SUBSCRIPTION_ID"
+		azure_client_id = "$AZURE_CLIENT_ID
         azure_env_name = "$AZURE_ENV_NAME"
 		metrics_receiver = module.git.base_module.exports.metrics_receiver
 	}
