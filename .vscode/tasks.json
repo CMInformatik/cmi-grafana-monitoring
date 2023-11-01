@@ -4,7 +4,7 @@
       "label": "build and run grafana agent collector",
       "type": "shell",
       "command": "docker",
-      "args": ["compose", "-f", ".\\grafana_collector_container\\docker-compose.yaml", "up"],
+      "args": ["compose", "-f", ".\\grafana_collector_container\\docker-compose.yaml", "up", "--build"],
       "dependsOn": ["buld grafana-collector local image"],
       "presentation": {
         "echo": true,
