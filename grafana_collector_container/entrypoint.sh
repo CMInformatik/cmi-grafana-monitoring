@@ -91,7 +91,7 @@ module.file "azure_auto_discovery" {
 	filename  = "/etc/agent/submodules/azure_discovery.river"
 	arguments {
 		azure_subscription_id = "$AZURE_SUBSCRIPTION_ID"
-		azure_client_id = "$AZURE_CLIENT_ID
+		azure_client_id = "$AZURE_CLIENT_ID"
         azure_env_name = "$AZURE_ENV_NAME"
 		metrics_receiver = module.git.base_module.exports.metrics_receiver
 	}
@@ -218,8 +218,6 @@ EOF
 else
   echo "Environment variable POSTGRES_DATA_SOURCES is not set or empty."
 fi
-
-
 
 # Set Environment Variable AGENT_MODE to flow since we want to Run the Agent in Flow Mode
 export AGENT_MODE="flow"
