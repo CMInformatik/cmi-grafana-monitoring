@@ -21,6 +21,7 @@ Der Container lässt sich vollständig per Env-Variablen konfigurieren. Die folg
 | ENABLE_OPENTELEMETRY_RECEIVER | false        | Nein    | Soll der OpenTelemetry Receiver aktiviert werden? true = Ja, false = Nein.                                 |
 | ENABLE_AZURE_AUTODISCOVERY    | false        | Nein    | Soll die Azure Auto-Discovery Integration aktiviert werden? true = Ja, false = Nein.                       |
 | ENABLE_PUSH_GATEWAY           | false        | Nein    | Soll der Push Gateway konfiguriert und gestartet werden? true = Ja, false = Nein.                          |
+| ENABLE_FORWARDERS             | false        | Nein    | Wenn diese Einstellung auf true gesetzt wird, wird der Prometheus und Loki forwarder aktiviert.            |
 
 ### OTEL-Collector
 
@@ -36,6 +37,14 @@ Wird `ENABLE_AZURE_AUTODISCOVERY = true` gesetz, sucht der Collector automatisch
 | AZURE_SUBSCRIPTION_ID | -       | Ja      | Subscription-ID, die der Collector überwachen soll. |
 | AZURE_ENV_NAME        | -       | Ja      | Name des Azure Env. (Bspw. Prod oder Stage).        |
 
+### Push Gateway
+
+Mit der Variabel `ENABLE_PUSH_GATEWAY = true` kann ein Push Gateway gestartet werden. Der Gateway hört auf dem Port 9091 und kann genutzt werden, um Metriken per Post Request an den Collector zu senden. Für weitere Informationen kann die [folgende Dokumentation](https://github.com/prometheus/pushgateway/) konsultiert werden.
+
+### Forwarders
+
+Mit der Einstellung `ENABLE_FORWARDERS = true` werden die Prometheus und Loki Forwarder konfiguriert und gestartet. Diese hören auf den Ports 9998 (Prometheus) und 9999 (Loki). Die Schnittstellen können genutzt werden, um Metriken und Logs an den Collector zu senden. Die Daten werden dann verarbeitet (filtering und tagging) und an den konfigurierten Grafana Cloud Stack gesendet.
+
 ### Testen des Collectors
 
 Für die Secrets muss im Ordner `grafana_collector_container` ein Secrets file mit dem Namen `local_configuration.env` und folgenden Inhalt angelegt werden:
@@ -43,6 +52,8 @@ Für die Secrets muss im Ordner `grafana_collector_container` ein Secrets file m
 ```bash
 GRAFANA_TOKEN=<grafana_token>
 BRANCH_NAME=<branch_name>
+BASIC_AUTH_USER=<basic_auth_user>
+BASIC_AUTH_PASSWORD=<basic_auth_password>
 ```
 
 Um den Collector lokal zu testen, kann diser anschliessend mit dem folgenden Befehl gebaut und gestartet werden:
