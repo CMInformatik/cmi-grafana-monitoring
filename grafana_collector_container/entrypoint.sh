@@ -175,28 +175,36 @@ handle_env_variable "POSTGRES_DATA_SOURCES"
   # Split the POSTGRES_DATA_SOURCES by newline and format it as an array
   IFS=',' read -ra DATA_SOURCE_NAMES_ARRAY <<< "$POSTGRES_DATA_SOURCES"
  
-  # Create a string with the format [value1, value2, ...]
   for value in "${DATA_SOURCE_NAMES_ARRAY[@]}"; do
-    # parser the following string postgresql://username:password@localhost:5432/database_name to get the server name
-    # and the database name
-    # remove the postgresql:// from the string
-    value_without_postgres=${value#"postgresql://"}
-    # split the string by @ to get the server name and the database name
-    IFS='@' read -ra intitial_split_array <<< "$value_without_postgres"
-    IFS=':' read -ra username_and_password_array <<< "${intitial_split_array[0]}"
+    # Split the value by = to get the instance name (left) and the connection string (right)
+    IFS='=' read -ra instance_connection_string_array <<< "$value"
+    instance_name=${instance_connection_string_array[0]}
+    connection_string=${instance_connection_string_array[1]}
+
+    # Remove the postgres:// from the connection string and split the string by @ to get the username and password (left) and the server, port and database (right)
+    value_without_postgres=${connection_string#"postgresql://"}
+    IFS='@' read -ra login_server_string_array <<< "$value_without_postgres"
+
+    # Split the login string by : to get the username (left) and the password (right)
+    IFS=':' read -ra username_and_password_array <<< "${login_server_string_array[0]}"
     username=${username_and_password_array[0]}
     password=${username_and_password_array[1]}
-    IFS='/' read -ra server_port_and_database_array <<< "${intitial_split_array[1]}"
+
+    # Split the server string by / to get the server and port (left) and the database (right)
+    IFS='/' read -ra server_port_and_database_array <<< "${login_server_string_array[1]}"
     database_name=${server_port_and_database_array[1]}
     server_and_port=${server_port_and_database_array[0]}
+
+    # Split the server and port string by : to get the server (left) and the port (right)
     IFS=':' read -ra server_and_port_array <<< "$server_and_port"
     server_name=${server_and_port_array[0]}
     server_port=${server_and_port_array[1]}
     
-    echo "Creating Postgres Scrape Configuration for $server_name with Username $username on Port $server_port and Database $database_name"
-    DATA_SOURCE_NAME="[\"$value\"]"
+    echo "Creating Postgres Scrape Configuration for Instance $instance_name with Username $username on Server $server_name on Port $server_port and Database $database_name"
+
+    DATA_SOURCE_NAME="[\"$connection_string\"]"
       cat << EOF >> $grafanaAgentConfigPath
-prometheus.exporter.postgres "postgres_$server_name" {
+prometheus.exporter.postgres "postgres_$instance_name" {
   data_source_names = $DATA_SOURCE_NAME
   autodiscovery {
     enabled            = true
@@ -204,16 +212,14 @@ prometheus.exporter.postgres "postgres_$server_name" {
   }
 }
 
-prometheus.scrape "prometheus_scraper_postgres_$server_name" {
-  targets    = prometheus.exporter.postgres.postgres_$server_name.targets
+prometheus.scrape "prometheus_scraper_postgres_$instance_name" {
+  targets    = prometheus.exporter.postgres.postgres_$instance_name.targets
   forward_to = [
     module.git.base_module.exports.metrics_receiver,
     ]
 }
 EOF
   done
-
- 
   echo "Postgres Configuration added to $grafanaAgentConfigPath"
 else
   echo "Environment variable POSTGRES_DATA_SOURCES is not set or empty."

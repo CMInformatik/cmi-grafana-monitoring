@@ -51,7 +51,7 @@ Mit der Einstellung `ENABLE_FORWARDERS = true` werden die Prometheus und Loki Fo
 Mit der Einstellung `ENABLE_POSTGRES_MONITORING = true` wird die Überwachung von Postgres Servern aktiviert. Die Konfiguration der Postgres Server erfolgt über die Env-Variable `POSTGRES_DATA_SOURCES`. Datenbanken auf den Servern werden automatisch discovered. Als Datenbank sollte somit immer `postgres` im String angegeben werden. Das folgende Beispiel zeigt die Konfiguration von zwei Postgres Servern:
 
 ```bash
-POSTGRES_DATA_SOURCES="postgresql://<username>:<password>@<server_name>:5432/postgres,"postgresql://<username>:<password>@<server_name>:5432/postgres"
+POSTGRES_DATA_SOURCES="<identifier1>=postgresql://<username>:<password>@<server_name>:5432/postgres,<identifier2>=postgresql://<username>:<password>@<server_name>:5432/postgres"
 ```
 
 > **_NOTE:_** Der server_name muss für jedes Element eindeutig sein und das Passwort darf keine im Connection-String enthaltene Sonderzeichen enthalten (Bspw. /, : oder , ).
