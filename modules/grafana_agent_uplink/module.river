@@ -26,7 +26,7 @@ argument "proxy_url" {
  ********************************************/
 
 export "metrics_receiver" {
-	value = prometheus.relabel.add_default_labels.receiver
+	value = prometheus.relabel.default_drop.receiver
 }
 
 export "logs_receiver" {
@@ -44,6 +44,22 @@ export "agent_logs_receiver" {
 /********************************************
  * RELABELING RESOURCES
  ********************************************/
+
+ module.git "default_drop_lists" {
+  repository = "https://github.com/CMInformatik/cmi-grafana-monitoring.git"
+  path       = "modules/grafana_default_drop_list/module.river"
+  revision   = argument.submodule_branch.value
+}
+
+prometheus.relabel "default_drop" {
+  forward_to = [prometheus.relabel.add_default_labels.receiver]
+
+  rule {
+	source_labels = module.git.default_drop_lists.exports.metrics_lable_drop_list
+    action        = "drop"
+  }
+}
+
 
 loki.process "grafana_agnet_log_processing" {
 	forward_to = [
