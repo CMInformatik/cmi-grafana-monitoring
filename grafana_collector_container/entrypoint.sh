@@ -27,6 +27,7 @@ handle_env_variable "AGENT_NAME"
 handle_env_variable "STACK_NAME" "cminformatik"
 handle_env_variable "BRANCH_NAME" "master"
 handle_env_variable "LOG_LEVEL" "info"
+handle_env_variable "ADDITIONAL_LABELS_TO_DROP" "[]"
 handle_env_variable "ENABLE_OPENTELEMETRY_RECEIVER" true
 handle_env_variable "ENABLE_AZURE_AUTODISCOVERY" true
 handle_env_variable "ENABLE_PUSH_GATEWAY" false
@@ -45,6 +46,22 @@ echo "SITE_NAME: $SITE_NAME"
 echo "AGENT_NAME: $AGENT_NAME"
 echo "STACK_NAME: $STACK_NAME"
 echo "BRANCH_NAME: $BRANCH_NAME"
+echo "LOG_LEVEL: $LOG_LEVEL"
+
+additional_lables_to_drop_string="[]"
+if [ "$ADDITIONAL_LABELS_TO_DROP" != "[]" ]; then
+    echo "The following metrics labels will be dropped: $ADDITIONAL_LABELS_TO_DROP"
+    # Split the ADDITIONAL_LABELS_TO_DROP by comma and format it as an array
+    IFS=',' read -ra ADDITIONAL_LABELS_TO_DROP_ARRAY <<< "$ADDITIONAL_LABELS_TO_DROP"
+    additional_lables_to_drop_string="["
+    for value in "${ADDITIONAL_LABELS_TO_DROP_ARRAY[@]}"; do
+        additional_lables_to_drop_string+="\"$value\","
+    done
+    additional_lables_to_drop_string=${additional_lables_to_drop_string::-1}
+    additional_lables_to_drop_string+="]"
+fi
+
+
 cat << EOF >> $grafanaAgentConfigPath
 logging {
 	level = "$LOG_LEVEL"
@@ -60,6 +77,7 @@ module.git "base_module" {
 		site             = "$SITE_NAME"
 		stack_name       = "$STACK_NAME"
 		submodule_branch = "$BRANCH_NAME"
+        additinal_lables_to_drop = $additional_lables_to_drop_string
 	}
 }
 
