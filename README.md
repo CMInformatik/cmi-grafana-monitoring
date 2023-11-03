@@ -57,6 +57,14 @@ POSTGRES_DATA_SOURCES="<identifier1>=postgresql://<username>:<password>@<server_
 
 > **_NOTE:_** Der server_name muss für jedes Element eindeutig sein und das Passwort darf keine im Connection-String enthaltene Sonderzeichen enthalten (Bspw. /, : oder , ).
 
+## Verwerfen von Metriken
+
+Mit der Variabel `ADDITIONAL_LABELS_TO_DROP` kann eine Komma getrennte Liste von Metrik Lables definiert werden. Die spezifizierten Metriken werden dann zusätzlich zu den default Lables konfiguriert unter ["grafana_default_drop_list"](./modules/grafana_default_drop_list/README.md) gedroppt.
+
+```bash
+ADDITIONAL_LABELS_TO_DROP="label1,label2,label3"
+```
+
 ### Testen des Collectors
 
 Für die Secrets muss im Ordner `grafana_collector_container` ein Secrets file mit dem Namen `local_configuration.env` und folgenden Inhalt angelegt werden:
