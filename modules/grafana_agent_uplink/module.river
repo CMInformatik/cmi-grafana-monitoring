@@ -21,6 +21,11 @@ argument "proxy_url" {
 	default  = null
 }
 
+argument "additinal_lables_to_drop" {
+	optional = true
+	default  = []
+}
+
 /********************************************
  * EXPORTS
  ********************************************/
@@ -54,10 +59,13 @@ module.git "default_drop_lists" {
 prometheus.relabel "default_drop" {
 	forward_to = [prometheus.relabel.add_default_labels.receiver]
 
-	rule {
-		source_labels = module.git.default_drop_lists.exports.metrics_lable_drop_list
-		action        = "drop"
-	}
+  rule {
+	source_labels = concat(
+		module.git.default_drop_lists.exports.metrics_lable_drop_list,
+		argument.additinal_lables_to_drop.value
+	)
+    action        = "drop"
+  }
 }
 
 loki.process "grafana_agnet_log_processing" {
