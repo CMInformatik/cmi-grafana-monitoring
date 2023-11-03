@@ -2,5 +2,9 @@ export "metrics_lable_drop_list" {
 	value = [
 		"container_network_transmit_packets_total",
 		"container_network_transmit_bytes_total",
+        "windows_iis_current_application_pool_start_time",
+        "windows_iis_maximum_worker_processes",
+        "windows_iis_recent_worker_process_failures",
+        "windows_iis_total_application_pool_recycles",
 	]
 }
