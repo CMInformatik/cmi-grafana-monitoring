@@ -27,8 +27,9 @@ prometheus.relabel "default_drop" {
   forward_to = [<your_target>]
 
   rule {
-    action        = "drop"
-    source_labels = module.git.default_drop_lists.exports.metrics_lable_drop_list
+    source_labels = ["__name__"]
+	regex  = join(module.git.default_drop_lists.exports.metrics_lable_drop_list, "|")
+	action = "drop"
   }
 }
 ```
