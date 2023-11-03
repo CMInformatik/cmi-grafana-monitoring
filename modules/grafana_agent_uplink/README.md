@@ -7,14 +7,14 @@ Das Modul stellt Receiver für Logs, Metriken und Traces bereit. Empfangene Date
 
 Das Modul akzeptiert folgende Argumente:
 
-| Name                     | default      | Pflicht | Beschreibung                                                                       |
-| ------------------------ | :----------- | ------- | ---------------------------------------------------------------------------------- |
-| token                    | -            | Ja      | Grafana token für die Authentifizierung bei Grafana Cloud                          |
-| site                     | -            | Ja      | Name der Site in dem der Collector betreiben wird (Bspw. CMI Cloud Prod oder UMB). |
-| submodule_branch         | master       | Nein    | Branch der für git submode verwendet werden soll.                                  |
-| stack_name               | cminformatik | Nein    | Name des Grafana Cloud Stack an den die Daten gesendet werden sollen.              |
-| proxy_url                | null         | Nein    | Proxy-URL über den Daten an Grafana Cloud gesendet werden sollen.                  |
-| additinal_lables_to_drop | []           | Nein    | Liste an Labels, die zusätzlich zu den default Labels gedroppt werden sollen.      |
+| Name                      | default      | Pflicht | Beschreibung                                                                       |
+| ------------------------- | :----------- | ------- | ---------------------------------------------------------------------------------- |
+| token                     | -            | Ja      | Grafana token für die Authentifizierung bei Grafana Cloud                          |
+| site                      | -            | Ja      | Name der Site in dem der Collector betreiben wird (Bspw. CMI Cloud Prod oder UMB). |
+| submodule_branch          | master       | Nein    | Branch der für git submode verwendet werden soll.                                  |
+| stack_name                | cminformatik | Nein    | Name des Grafana Cloud Stack an den die Daten gesendet werden sollen.              |
+| proxy_url                 | null         | Nein    | Proxy-URL über den Daten an Grafana Cloud gesendet werden sollen.                  |
+| additional_lables_to_drop | []           | Nein    | Liste an Labels, die zusätzlich zu den default Labels gedroppt werden sollen.      |
 
 ## Exports
 
