@@ -61,8 +61,8 @@ prometheus.relabel "default_drop" {
 
 	rule {
 		source_labels = ["__name__"]
-		regex  = join(concat(module.git.default_drop_lists.exports.metrics_lable_drop_list, argument.additinal_lables_to_drop.value), "|")
-		action = "drop"
+		regex         = join(concat(module.git.default_drop_lists.exports.metrics_lable_drop_list, argument.additinal_lables_to_drop.value), "|")
+		action        = "drop"
 	}
 }
 
