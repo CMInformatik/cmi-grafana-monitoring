@@ -1,4 +1,4 @@
-export "metrics_drop_list" {
+export "metrics_lable_drop_list" {
   value = [
     "container_network_transmit_packets_total",
     "container_network_transmit_bytes_total",
