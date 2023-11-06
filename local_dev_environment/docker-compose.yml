@@ -1,0 +1,56 @@
+version: "3.8"
+
+services:
+  tempo:
+    image: grafana/tempo:2.3.0
+    command: [ "-config.file=/etc/tempo.yaml" ]
+    volumes:
+      - tempo_data:/tmp/tempo
+      - ./tempo/tempo.yaml:/etc/tempo.yaml
+    ports:
+      - "3200"  # tempo
+      - "4317"  # otlp grpc
+      - "4318"  # otlp http
+  loki:
+    image: grafana/loki:2.9.2
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+  collector:
+    image: otel/opentelemetry-collector-contrib:0.88.0
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+      - "55679:55679"
+      - "8090"
+    volumes:
+      - ./collector/collector.yaml:/etc/otelcol-contrib/config.yaml
+  prometheus:
+    image: prom/prometheus:v2.47.2
+    command:
+      - "--enable-feature=remote-write-receiver"
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    ports:
+      - "9090:9090"
+    volumes:
+      - prometheus:/prometheus
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+  grafana:
+    image: grafana/grafana-enterprise:10.2.0
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+      - ./grafana/dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml
+      - ./grafana/netcore-dashboard.json:/var/lib/grafana/dashboards/netcore-dashboard.json
+    environment:
+      GF_FEATURE_TOGGLES_ENABLE: "tempoApmTable"
+    ports:
+      - "3000:3000"
+
+volumes:
+  prometheus:
+    driver: local
+  grafana_data:
+    driver: local
+  tempo_data:
+    driver: local
