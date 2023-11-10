@@ -1,0 +1,40 @@
+receivers:
+  otlp:
+    protocols:
+      http:
+        cors:
+          allowed_origins:
+            - http://localhost:8080
+      grpc:
+
+processors:
+  batch:
+
+exporters:
+  prometheus:
+    endpoint: collector:8090
+  otlphttp:
+    endpoint: http://tempo:4318
+  loki:
+    endpoint: http://loki:3100/loki/api/v1/push
+
+extensions:
+  zpages:
+    endpoint: 0.0.0.0:55679
+
+service:
+  telemetry:
+    logs:
+      level: "debug"
+  pipelines:
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [prometheus]
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlphttp]
+    logs:
+      receivers: [otlp]
+      exporters: [loki]
