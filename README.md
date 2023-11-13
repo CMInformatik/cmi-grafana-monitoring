@@ -74,7 +74,7 @@ GRAFANA_TOKEN=<grafana_token>
 BRANCH_NAME=<branch_name>
 ```
 
-Um den Collector lokal zu testen, kann diser anschliessend mit dem folgenden Befehl gebaut und gestartet werden:
+Um den Collector lokal zu testen, kann dieser anschliessend mit dem folgenden Befehl gebaut und gestartet werden:
 
 ```bash
 docker build --tag "grafana_collector_local_image:latest" .\grafana_collector_container\
@@ -83,7 +83,7 @@ docker compose -f .\grafana_collector_container\docker-compose.yaml up
 
 ## Grafana Agent River Module
 
-Der Grafana Agent flow nutzt als Konfigurations-Sprache eine Eigenentwicklung von Grafana namens River. River erlaubt das Auslagern von Konfigurationen in sogenannte Module. Im Ordner `modules` befinden sich einige solche Module, die in verschiedenen Umgebungen verwendet werden (UMB, Netrics, Azure usw.). Genauere Informationen zu den Modulen können den jeweiligen Readme-Dateien entnommen werden. Weitere Informationen bezüglich Grafana Agent Flow und River könenn dem [folgenden Link](https://grafana.com/docs/agent/latest/flow/) entnommen werden.
+Der Grafana Agent flow nutzt als Konfigurations-Sprache eine Eigenentwicklung von Grafana namens River. River erlaubt das Auslagern von Konfigurationen in sogenannte Module. Im Ordner `modules` befinden sich einige solche Module, die in verschiedenen Umgebungen verwendet werden (UMB, Netrics, Azure usw.). Genauere Informationen zu den Modulen können den jeweiligen Readme-Dateien entnommen werden. Weitere Informationen bezüglich Grafana Agent Flow und River können dem [folgenden Link](https://grafana.com/docs/agent/latest/flow/) entnommen werden.
 
 ## Tooling
 
