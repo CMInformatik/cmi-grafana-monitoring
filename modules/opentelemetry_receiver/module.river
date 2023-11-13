@@ -37,7 +37,7 @@ otelcol.processor.attributes "drop_health_check_logs" {
 
 		attribute {
 			key   = "RequestPath"
-			value = "/healthz|/health"
+			value = "/\healthz|/\health"
 		}
 	}
 
