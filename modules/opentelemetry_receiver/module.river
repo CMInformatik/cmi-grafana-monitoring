@@ -25,8 +25,24 @@ otelcol.receiver.otlp "default" {
 otelcol.processor.batch "default" {
 	output {
 		metrics = [otelcol.exporter.prometheus.default.input]
-		logs    = [otelcol.exporter.loki.default.input]
+		logs    = [otelcol.processor.attributes.drop_health_check_logs.input]
 		traces  = [argument.otelcol_traces_receiver.value]
+	}
+}
+
+// Drop all logs that are health check logs
+otelcol.processor.attributes "drop_health_check_logs" {
+	exclude {
+		match_type = "strict"
+
+		attribute {
+			key   = "Path"
+			value = "/health"
+		}
+	}
+
+	output {
+		logs = [otelcol.exporter.loki.default.input]
 	}
 }
 
