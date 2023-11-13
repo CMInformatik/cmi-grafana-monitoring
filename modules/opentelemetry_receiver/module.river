@@ -34,14 +34,16 @@ otelcol.processor.batch "default" {
 otelcol.processor.attributes "drop_health_check_logs" {
 	exclude {
 		match_type = "regexp"
+
 		attribute {
-			key = "RequestPath"
+			key   = "RequestPath"
 			value = "/healthz|/health"
 		}
 	}
-  output {
-    logs  = [otelcol.exporter.loki.default.input]
-  }
+
+	output {
+		logs = [otelcol.exporter.loki.default.input]
+	}
 }
 
 otelcol.exporter.loki "default" {
