@@ -33,11 +33,11 @@ otelcol.processor.batch "default" {
 // Drop all logs that are health check logs
 otelcol.processor.attributes "drop_health_check_logs" {
 	exclude {
-		match_type = "regexp"
+		match_type = "strict"
 
 		attribute {
-			key   = "RequestPath"
-			value = "^/healthz$|^/health$"
+			key   = "Path"
+			value = "/health"
 		}
 	}
 
