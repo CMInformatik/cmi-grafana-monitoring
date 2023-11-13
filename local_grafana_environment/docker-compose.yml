@@ -22,7 +22,7 @@ services:
       - "4317:4317"
       - "4318:4318"
       - "8090"
-      #- "55679:55679"
+      - "55679:55679"
     volumes:
       - ./collector/collector.yaml:/etc/otelcol-contrib/config.yaml
   prometheus:
