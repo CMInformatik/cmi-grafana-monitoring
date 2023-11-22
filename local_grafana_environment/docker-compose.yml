@@ -16,15 +16,26 @@ services:
     ports:
       - "3100:3100"
     command: -config.file=/etc/loki/local-config.yaml
-  collector:
-    image: otel/opentelemetry-collector-contrib:0.88.0
+  grafna_agent:
+    image: grafana/agent:v0.38.0
     ports:
       - "4317:4317"
       - "4318:4318"
-      - "8090"
-      - "55679:55679"
+      - "12345:12345"
+    environment:
+      - AGENT_MODE=flow
+    command: "run --server.http.listen-addr=0.0.0.0:12345 /etc/agent/config.river"
     volumes:
-      - ./collector/collector.yaml:/etc/otelcol-contrib/config.yaml
+      - ./grafana_agent/config.river:/etc/agent/config.river
+  #collector:
+  #  image: otel/opentelemetry-collector-contrib:0.88.0
+  #  ports:
+  #    - "4317:4317"
+  #    - "4318:4318"
+  #    - "8090"
+  #    - "55679:4319"
+  #  volumes:
+  #    - ./collector/collector.yaml:/etc/otelcol-contrib/config.yaml
   prometheus:
     image: prom/prometheus:v2.47.2
     command:

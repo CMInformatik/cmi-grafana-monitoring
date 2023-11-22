@@ -1,0 +1,40 @@
+logging {
+  level  = "info"
+  format = "logfmt"
+}
+
+prometheus.remote_write "local" {
+  endpoint {
+    url = "http://prometheus:9090/api/v1/write"
+  }
+}
+
+loki.write "local" {
+    endpoint {
+        url = "http://loki:3100/loki/api/v1/push"
+    }
+}
+
+otelcol.exporter.otlp "tempo_local" {
+  client {
+    endpoint = "tempo:4317"
+    tls {
+        insecure             = true
+        insecure_skip_verify = true
+    }
+  }
+}
+
+module.git "otel_receiver" {
+	repository = "https://github.com/CMInformatik/cmi-grafana-monitoring.git"
+	path       = "modules/opentelemetry_receiver/module.river"
+	revision   = "master"
+	arguments {
+		otelcol_metrics_receiver = prometheus.remote_write.local.receiver
+		otelcol_logs_receiver    = loki.write.local.receiver
+		otelcol_traces_receiver  = otelcol.exporter.otlp.tempo_local.input
+	}
+}
+
+
+
