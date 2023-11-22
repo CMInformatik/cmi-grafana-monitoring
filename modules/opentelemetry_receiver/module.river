@@ -4,6 +4,21 @@ argument "otelcol_logs_receiver" { }
 
 argument "otelcol_traces_receiver" { }
 
+otelcol.processor.filter "drop_healthchecks" {
+  error_mode = "ignore"
+  logs {
+    log_record = [
+      "attributes[\"RequestPath\"] == \"/health\"",
+      "attributes[\"RequestPath\"] == \"/healthx\"",
+    ]
+  }
+  output {
+		metrics = [otelcol.processor.batch.default.input]
+		logs    = [otelcol.processor.batch.default.input]
+		traces  = [otelcol.processor.batch.default.input]
+  }
+}
+
 otelcol.receiver.otlp "default" {
 	grpc {
 		endpoint         = "0.0.0.0:4317"
@@ -16,9 +31,9 @@ otelcol.receiver.otlp "default" {
 	}
 
 	output {
-		metrics = [otelcol.processor.batch.default.input]
-		logs    = [otelcol.processor.batch.default.input]
-		traces  = [otelcol.processor.batch.default.input]
+		metrics = [otelcol.processor.filter.drop_healthchecks.input]
+		logs    = [otelcol.processor.filter.drop_healthchecks.input]
+		traces  = [otelcol.processor.filter.drop_healthchecks.input]
 	}
 }
 
