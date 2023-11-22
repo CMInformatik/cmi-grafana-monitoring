@@ -18,6 +18,7 @@ loki.write "local" {
 otelcol.exporter.otlp "tempo_local" {
 	client {
 		endpoint = "tempo:4317"
+
 		tls {
 			insecure             = true
 			insecure_skip_verify = true

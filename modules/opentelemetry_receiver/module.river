@@ -5,18 +5,20 @@ argument "otelcol_logs_receiver" { }
 argument "otelcol_traces_receiver" { }
 
 otelcol.processor.filter "drop_healthchecks" {
-  error_mode = "ignore"
-  logs {
-    log_record = [
-      "attributes[\"RequestPath\"] == \"/health\"",
-      "attributes[\"RequestPath\"] == \"/healthx\"",
-    ]
-  }
-  output {
+	error_mode = "ignore"
+
+	logs {
+		log_record = [
+			"attributes[\"RequestPath\"] == \"/health\"",
+			"attributes[\"RequestPath\"] == \"/healthx\"",
+		]
+	}
+
+	output {
 		metrics = [otelcol.processor.batch.default.input]
 		logs    = [otelcol.processor.batch.default.input]
 		traces  = [otelcol.processor.batch.default.input]
-  }
+	}
 }
 
 otelcol.receiver.otlp "default" {
