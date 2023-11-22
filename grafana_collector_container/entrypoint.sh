@@ -28,8 +28,8 @@ handle_env_variable "STACK_NAME" "cminformatik"
 handle_env_variable "BRANCH_NAME" "master"
 handle_env_variable "LOG_LEVEL" "info"
 handle_env_variable "ADDITIONAL_LABELS_TO_DROP" "[]"
-handle_env_variable "ENABLE_OPENTELEMETRY_RECEIVER" true
-handle_env_variable "ENABLE_AZURE_AUTODISCOVERY" true
+handle_env_variable "ENABLE_OPENTELEMETRY_RECEIVER" false
+handle_env_variable "ENABLE_AZURE_AUTODISCOVERY" false
 handle_env_variable "ENABLE_PUSH_GATEWAY" false
 handle_env_variable "ENABLE_FORWARDERS" false
 handle_env_variable "ENABLE_POSTGRES_MONITORING" false
