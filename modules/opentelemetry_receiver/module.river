@@ -18,7 +18,7 @@ otelcol.processor.filter "drop_healthchecks" {
 	span = [
 		"attributes[\"http.route\"] == \"/health\"",
 		"attributes[\"http.route\"] == \"/healthz\"",
-	]	
+	]
   }
   output {
 		metrics = [otelcol.processor.batch.default.input]

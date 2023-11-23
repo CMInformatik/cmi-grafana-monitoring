@@ -27,15 +27,6 @@ services:
     command: "run --server.http.listen-addr=0.0.0.0:12345 /etc/agent/config.river"
     volumes:
       - ./grafana_agent/config.river:/etc/agent/config.river
-  #collector:
-  #  image: otel/opentelemetry-collector-contrib:0.88.0
-  #  ports:
-  #    - "4317:4317"
-  #    - "4318:4318"
-  #    - "8090"
-  #    - "55679:4319"
-  #  volumes:
-  #    - ./collector/collector.yaml:/etc/otelcol-contrib/config.yaml
   prometheus:
     image: prom/prometheus:v2.47.2
     command:
