@@ -1,4 +1,4 @@
-ARG grafana_Image_tag=latest
+ARG grafana_Image_tag="v0.38.0"
 ARG pushgateway_version="1.6.2"
 
 # This stage is only to download the push-gateway binary
