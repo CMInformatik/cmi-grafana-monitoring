@@ -16,7 +16,7 @@ services:
     ports:
       - "3100:3100"
     command: -config.file=/etc/loki/local-config.yaml
-  grafna_agent:
+  grafana_agent:
     image: grafana/agent:v0.38.0
     ports:
       - "4317:4317"
