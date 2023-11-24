@@ -17,10 +17,23 @@ otelcol.processor.filter "drop_healthchecks" {
 	}
 
 	output {
-		metrics = [otelcol.processor.batch.default.input]
-		logs    = [otelcol.processor.batch.default.input]
-		traces  = [otelcol.processor.batch.default.input]
+		metrics = [otelcol.processor.attributes.set_tenant_label.input]
+		logs    = [otelcol.processor.attributes.set_tenant_label.input]
+		traces  = [otelcol.processor.attributes.set_tenant_label.input]
 	}
+}
+
+otelcol.processor.attributes "set_tenant_label" {
+    action {
+      key = "loki.attribute.labels"
+      action = "insert"
+      value = "tenant_id"
+    }
+    output {
+  		metrics = [otelcol.processor.batch.default.input]
+  		logs    = [otelcol.processor.batch.default.input]
+  		traces  = [otelcol.processor.batch.default.input]
+    }
 }
 
 otelcol.receiver.otlp "default" {
