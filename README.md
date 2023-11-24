@@ -4,7 +4,7 @@ Das folgende Projekt enthält alle Resourcen, die im Zusammenhang mit dem Grafan
 
 ## Azure Collector Container
 
-Im Ordner `grafana_collector_container` befinden sich das Projekt für den Grafana Collector, der in jeder Azure Umgebung (CMI Cloud Prod, CMI Cloud Stage usw.) einmal läuft. Dieser Collector wird als Container gestartet und findet alle VMs in der angegebenen Azure Subscription. Die Authentifizierung bei Azure erfolgt dabei über eine Managed Identity der Container Instance.
+Im Ordner `grafana_collector_container` befinden sich das Projekt für den Grafana Collector, der in jeder Azure Site (CMI Cloud Prod, CMI Cloud Stage usw.) einmal läuft. Dieser Collector wird als Container gestartet und findet alle VMs in der angegebenen Azure Subscription. Die Authentifizierung bei Azure erfolgt dabei über eine Managed Identity der Container Instance.
 
 ### Allgemeine Konfiguration
 

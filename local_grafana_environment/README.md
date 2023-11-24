@@ -10,9 +10,10 @@ To start the setup, just run:
 docker-compose up
 ```
 
-The setup runs the OpenTelemetry Collector which exposes the following endpoints for receiving data:
+The setup runs the Grafana Agent which exposes the following endpoints for receiving data:
 - `http://localhost:4317` (OTLP GRPC)
 - `http://localhost:4318` (OTLP HTTP)
+- `http://localhost:12345` (Status UI)
 
 
 The Grafana UI is available at http://localhost:3000, the credentials for the initial admin user are `admin` / `admin`.
@@ -33,7 +34,7 @@ The services can also be started with the vscode task `run local grafana test en
 
 A quick overview of the services run by this setup, and how they interact with each other.
 
-### OpenTelemetry Collector
+### Grafana Agent (Collector)
 
 The collector is configured to receive trace, metrics and log data in the `OTLP` format either through `GRPC` (port 4317) or `HTTP` (port 4318).
 
