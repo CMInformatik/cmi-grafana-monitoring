@@ -4,8 +4,33 @@
       "label": "build and run grafana agent collector",
       "type": "shell",
       "command": "docker",
-      "args": ["compose", "-f", ".\\grafana_collector_container\\docker-compose.yaml", "up", "--build"],
-      "dependsOn": ["buld grafana-collector local image"],
+      "args": [
+        "compose",
+        "-f",
+        ".\\grafana_collector_container\\docker-compose.yaml",
+        "up",
+        "--build"
+      ],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "run local grafana test environment",
+      "type": "shell",
+      "command": "docker",
+      "args": [
+        "compose",
+        "-f",
+        ".\\local_grafana_environment\\docker-compose.yml",
+        "up"
+      ],
       "presentation": {
         "echo": true,
         "reveal": "always",
