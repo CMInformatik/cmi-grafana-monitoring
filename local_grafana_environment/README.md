@@ -27,6 +27,8 @@ To remove all services and volumes from this setup, run:
 docker-compose down -v
 ```
 
+The services can also be started with the vscode task `run local grafana test environment`.
+
 ## Services
 
 A quick overview of the services run by this setup, and how they interact with each other.
