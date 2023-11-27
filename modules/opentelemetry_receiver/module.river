@@ -31,7 +31,7 @@ otelcol.processor.attributes "set_tenant_label" {
 	}
 
 	output {
-		logs    = [otelcol.processor.batch.default.input]
+		logs = [otelcol.processor.batch.default.input]
 	}
 }
 
