@@ -17,9 +17,9 @@ otelcol.processor.filter "drop_healthchecks" {
 	}
 
 	output {
-		metrics = [otelcol.processor.attributes.set_tenant_label.input]
+		metrics = [otelcol.processor.batch.default.input]
 		logs    = [otelcol.processor.attributes.set_tenant_label.input]
-		traces  = [otelcol.processor.attributes.set_tenant_label.input]
+		traces  = [otelcol.processor.batch.default.input]
 	}
 }
 
@@ -31,9 +31,7 @@ otelcol.processor.attributes "set_tenant_label" {
 	}
 
 	output {
-		metrics = [otelcol.processor.batch.default.input]
 		logs    = [otelcol.processor.batch.default.input]
-		traces  = [otelcol.processor.batch.default.input]
 	}
 }
 
