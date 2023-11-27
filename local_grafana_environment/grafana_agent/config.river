@@ -26,10 +26,8 @@ otelcol.exporter.otlp "tempo_local" {
 	}
 }
 
-module.git "otel_receiver" {
-	repository = "https://github.com/CMInformatik/cmi-grafana-monitoring.git"
-	path       = "modules/opentelemetry_receiver/module.river"
-	revision   = "master"
+module.file "otel_receiver" {
+	filename = "/modules/opentelemetry_receiver/module.river"
 
 	arguments {
 		otelcol_metrics_receiver = prometheus.remote_write.local.receiver

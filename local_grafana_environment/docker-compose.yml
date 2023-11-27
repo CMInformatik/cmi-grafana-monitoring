@@ -27,6 +27,7 @@ services:
     command: "run --server.http.listen-addr=0.0.0.0:12345 /etc/agent/config.river"
     volumes:
       - ./grafana_agent/config.river:/etc/agent/config.river
+      - ./../modules:/modules
   prometheus:
     image: prom/prometheus:v2.47.2
     command:
