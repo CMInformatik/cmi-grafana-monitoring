@@ -110,7 +110,6 @@ prometheus.relabel "add_default_labels" {
 	rule {
 		source_labels = ["instance"]
 		target_label  = "agent_hostname"
-		regex         = "^integrations/.*"
 	}
 
 	// replace is required by windows integration
