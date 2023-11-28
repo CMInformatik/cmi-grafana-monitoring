@@ -100,7 +100,6 @@ loki.relabel "add_default_lables" {
 }
 
 prometheus.relabel "add_default_labels" {
-
 	rule {
 		target_label = "site"
 		replacement  = argument.site.value

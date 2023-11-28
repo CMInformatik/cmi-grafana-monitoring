@@ -4,7 +4,7 @@ argument "otelcol_logs_receiver" { }
 
 argument "otelcol_traces_receiver" { }
 
-argument "otelcol_attribute_environment" {}
+argument "otelcol_attribute_environment" { }
 
 otelcol.processor.filter "drop_healthchecks" {
 	error_mode = "ignore"
