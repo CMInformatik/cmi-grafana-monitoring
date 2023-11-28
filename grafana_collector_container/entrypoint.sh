@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ##################################################### CMI Cloud Azure Grafana Agent Entry Point #####################################################
-# Das folgende Script dient als container entry point und kümmert sich um die einrichtung des Grafana Agent anhand der übergebenen Env Variablen
+# Das folgende Script dient als container entrypoint und kümmert sich um die Einrichtung des Grafana Agent anhand der übergebenen Env Variablen
 
 grafanaAgentConfigPath="/etc/agent/config.river"
 
@@ -124,12 +124,16 @@ fi
 # add open telemetry receiver if not disabled
 if [  "$ENABLE_OPENTELEMETRY_RECEIVER" == true ]; then
     echo "Configuring Open Telemetry Receiver..."
+    handle_env_variable "OPENTELEMETRY_ATTRIBUTE_ENVIRONMENT"
+    echo "Environment attribute: $OPENTELEMETRY_ATTRIBUTE_ENVIRONMENT"
+
 cat << EOF >> $grafanaAgentConfigPath
 module.file "otelcol" {
 	filename  = "/etc/agent/submodules/otelcol.river"
 	arguments {
-		base_module_exports = module.git.base_module.exports
-		branch = "$BRANCH_NAME"
+		base_module_exports           = module.git.base_module.exports
+		branch                        = "$BRANCH_NAME"
+        otelcol_attribute_environment = "$OPENTELEMETRY_ATTRIBUTE_ENVIRONMENT"
 	}
 }
 EOF

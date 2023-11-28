@@ -27,7 +27,12 @@ Der Container lässt sich vollständig per Env-Variablen konfigurieren. Die folg
 
 ### OTEL-Collector
 
-Wird `ENABLE_OPENTELEMETRY_RECEIVER = true` gesetzt, wird ein OpenTelemetry Receiver konfiguriert und gestartet. Diese hört auf den Ports 4317 (OTLP-GRPC) und 4318 (OTLP-HTTP). Die Schnittstelle kann genutzt werden, um Metriken, Logs und Traces an den Collector zu senden. Die Daten werden dann verarbeitet (filtering und tagging) und an den konfigurierten Grafana Cloud Stack gesendet.
+Wird `ENABLE_OPENTELEMETRY_RECEIVER = true` gesetzt, wird ein OpenTelemetry Receiver konfiguriert und gestartet. Diese hört auf den Ports 4317 (OTLP-GRPC) und 4318 (OTLP-HTTP). Die Schnittstelle kann genutzt werden, um Metriken, Logs und Traces an den Collector zu senden. Die Daten werden dann verarbeitet (filtering und tagging) und an den konfigurierten Grafana Cloud Stack gesendet. Für die Integration sind folgende Einstellungen notwendig:
+
+| Name                                | default | Pflicht | Beschreibung                                                                                                                                    |
+|-------------------------------------|:--------|---------|-------------------------------------------------------------------------------------------------------------------------------------------------|
+| OPENTELEMETRY_ATTRIBUTE_ENVIRONMENT | -       | Ja      | Setzt das Attribut `environment` in Traces, Logs und Metriken auf den angegebenen Wert, sofern es durch die Quelle nicht bereits gesetzt wurde. |
+
 
 ### Azure Auto-Discovery
 

@@ -4,6 +4,8 @@ argument "otelcol_logs_receiver" { }
 
 argument "otelcol_traces_receiver" { }
 
+argument "otelcol_attribute_environment" {}
+
 otelcol.processor.filter "drop_healthchecks" {
 	error_mode = "ignore"
 
@@ -17,6 +19,20 @@ otelcol.processor.filter "drop_healthchecks" {
 	}
 
 	output {
+		metrics = [otelcol.processor.attributes.set_environment_label.input]
+		logs    = [otelcol.processor.attributes.set_environment_label.input]
+		traces  = [otelcol.processor.attributes.set_environment_label.input]
+	}
+}
+
+otelcol.processor.attributes "set_environment_label" {
+	action {
+		key    = "environment"
+		action = "insert"
+		value  = argument.otelcol_attribute_environment
+	}
+
+	output {
 		metrics = [otelcol.processor.batch.default.input]
 		logs    = [otelcol.processor.attributes.set_tenant_label.input]
 		traces  = [otelcol.processor.batch.default.input]
@@ -24,6 +40,9 @@ otelcol.processor.filter "drop_healthchecks" {
 }
 
 otelcol.processor.attributes "set_tenant_label" {
+	// For loki, moves the tenant id from the log records attributes to a first class label.
+	// Note: loki.attribute.labels has special meaning, see 
+	// https://grafana.com/docs/agent/latest/flow/reference/components/otelcol.exporter.loki
 	action {
 		key    = "loki.attribute.labels"
 		action = "insert"
