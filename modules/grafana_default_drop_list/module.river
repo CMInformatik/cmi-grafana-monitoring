@@ -28,5 +28,18 @@ export "metrics_lable_drop_list" {
 		"windows_iis_worker_uri_cache_items",
 		"windows_iis_worker_uri_cache_items_flushed_total",
 		"windows_iis_worker_uri_cache_items_total",
+		"probe_all_duration_seconds_bucket",
+		"windows_iis_time_since_last_worker_process_failure",
+		"windows_iis_worker_current_requests",
+		"windows_iis_worker_current_websocket_requests",
+		"windows_iis_worker_file_cache_flushes_total",
+		"windows_iis_worker_current_requests",
+		"windows_iis_worker_current_websocket_requests",
+		"windows_iis_worker_file_cache_flushes_total",
+		"windows_service_state",
+		"rpc_server_duration_milliseconds_bucket",
+		"loki_source_file_file_bytes_total",
+		"loki_source_file_read_bytes_total",
+		"prometheus_sd_kubernetes_events_total",
 	]
 }
