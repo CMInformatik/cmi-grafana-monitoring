@@ -84,7 +84,7 @@ loki.process "grafana_agnet_log_processing" {
 
 loki.relabel "add_default_lables" {
 	forward_to = [
-		module.git.grafana_cloud.exports.logs_receiver,
+		loki.process.exports.logs_receiver,
 	]
 
 	rule {
@@ -95,6 +95,18 @@ loki.relabel "add_default_lables" {
 	rule {
 		source_labels = ["__host__"]
 		target_label  = "agent_hostname"
+	}
+}
+
+loki.process "drop_unwanted_logs" {
+	forward_to = [
+		module.git.grafana_cloud.exports.logs_receiver,
+	]
+
+	stage.drop {
+		source = "source"
+		expression = "CMI.Server.Fulltext.FulltextIndexQueue.cs*"
+		drop_counter_reason = "Drop fulltext index logs because some servers are generating a lot of logs and we don't need them"
 	}
 }
 
