@@ -105,8 +105,8 @@ loki.process "drop_unwanted_logs" {
 
 	// Drop all logs from fulltext, since we currently have some servers generating lots of error logs in this component. Can possibly be removed in the future
 	stage.drop {
-		source = "source"
-		expression = "CMI.Server.Fulltext.FulltextIndexQueue.cs*"
+		source              = "source"
+		expression          = "CMI.Server.Fulltext.FulltextIndexQueue.cs*"
 		drop_counter_reason = "Drop fulltext index logs because some servers are generating a lot of logs and we don't need them"
 	}
 }
