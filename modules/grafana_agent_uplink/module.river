@@ -84,7 +84,7 @@ loki.process "grafana_agnet_log_processing" {
 
 loki.relabel "add_default_lables" {
 	forward_to = [
-		loki.process.drop_unwanted_logs.exports.receiver,
+		loki.process.drop_unwanted_logs.receiver,
 	]
 
 	rule {
@@ -100,7 +100,7 @@ loki.relabel "add_default_lables" {
 
 loki.process "drop_unwanted_logs" {
 	forward_to = [
-		module.git.grafana_cloud.logs_receiver,
+		module.git.grafana_cloud.exports.logs_receiver,
 	]
 
 	// Drop all logs from fulltext, since we currently have some servers generating lots of error logs in this component. Can possibly be removed in the future
