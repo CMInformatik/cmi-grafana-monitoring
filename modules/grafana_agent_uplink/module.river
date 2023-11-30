@@ -84,7 +84,7 @@ loki.process "grafana_agnet_log_processing" {
 
 loki.relabel "add_default_lables" {
 	forward_to = [
-		loki.process.exports.receiver,
+		loki.process.drop_unwanted_logs.exports.receiver,
 	]
 
 	rule {
