@@ -31,6 +31,7 @@ otelcol.processor.attributes "set_environment_label" {
 		action = "insert"
 		value  = argument.otelcol_attribute_environment.value
 	}
+
 	output {
 		metrics = [otelcol.processor.batch.default.input]
 		logs    = [otelcol.processor.attributes.set_loki_labels.input]
@@ -47,6 +48,7 @@ otelcol.processor.attributes "set_loki_labels" {
 		action = "insert"
 		value  = "tenant_id"
 	}
+
 	action {
 		key    = "loki.resource.labels"
 		action = "insert"
