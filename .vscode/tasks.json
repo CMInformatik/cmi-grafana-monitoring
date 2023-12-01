@@ -1,4 +1,5 @@
 {
+  "version": "2.0.0",
   "tasks": [
     {
       "label": "build and run grafana agent collector",

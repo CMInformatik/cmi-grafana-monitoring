@@ -133,7 +133,7 @@ module.file "otelcol" {
 	arguments {
 		base_module_exports           = module.git.base_module.exports
 		branch                        = "$BRANCH_NAME"
-        otelcol_attribute_environment = "$OPENTELEMETRY_ATTRIBUTE_ENVIRONMENT"
+		otelcol_attribute_environment = "$OPENTELEMETRY_ATTRIBUTE_ENVIRONMENT"
 	}
 }
 EOF

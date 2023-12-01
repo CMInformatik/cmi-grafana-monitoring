@@ -29,7 +29,7 @@ otelcol.processor.attributes "set_environment_label" {
 	action {
 		key    = "environment"
 		action = "insert"
-		value  = argument.otelcol_attribute_environment
+		value  = argument.otelcol_attribute_environment.value
 	}
 
 	output {
