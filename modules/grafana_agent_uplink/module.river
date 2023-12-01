@@ -118,7 +118,7 @@ loki.process "drop_unwanted_logs" {
 	}
 
 	stage.drop {
-		source              = "serverity"
+		source              = "severity"
 		expression          = "Verbose"
 		drop_counter_reason = "Drop verbose logs"
 	}
