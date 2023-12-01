@@ -46,13 +46,7 @@ otelcol.processor.attributes "set_loki_labels" {
 	action {
 		key    = "loki.attribute.labels"
 		action = "insert"
-		value  = "tenant_id"
-	}
-
-	action {
-		key    = "loki.attribute.labels"
-		action = "insert"
-		value  = "environment"
+		value  = "tenant_id, environment"
 	}
 
 	output {
