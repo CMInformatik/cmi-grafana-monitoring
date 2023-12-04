@@ -27,24 +27,28 @@ otelcol.processor.filter "drop_healthchecks" {
 
 otelcol.processor.transform "set_environment_label" {
 	error_mode = "ignore"
+
 	metric_statements {
-		context = "datapoint"
+		context    = "datapoint"
 		statements = [
 			format("set(attributes[\"environment\"], \"%s\") where attributes[\"environment\"] == nil", argument.otelcol_attribute_environment.value),
 		]
 	}
+
 	trace_statements {
-		context = "resource"
+		context    = "resource"
 		statements = [
 			format("set(attributes[\"environment\"], \"%s\") where attributes[\"environment\"] == nil", argument.otelcol_attribute_environment.value),
 		]
 	}
+
 	log_statements {
-		context = "resource"
+		context    = "resource"
 		statements = [
 			format("set(attributes[\"environment\"], \"%s\") where attributes[\"environment\"] == nil", argument.otelcol_attribute_environment.value),
 		]
 	}
+
 	output {
 		metrics = [otelcol.processor.batch.default.input]
 		logs    = [otelcol.processor.attributes.set_loki_labels.input]
