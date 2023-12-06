@@ -70,6 +70,7 @@ loki.write "default" {
 	endpoint {
 		proxy_url = argument.proxy_url.value
 		url       = json_decode(remote.http.config_file.content)["hlInstanceUrl"] + "/loki/api/v1/push"
+		max_streams = 5000
 
 		basic_auth {
 			username = json_decode(remote.http.config_file.content)["hlInstanceId"]
