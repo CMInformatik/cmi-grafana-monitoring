@@ -68,8 +68,8 @@ prometheus.remote_write "default" {
 // Logs
 loki.write "default" {
 	endpoint {
-		proxy_url = argument.proxy_url.value
-		url       = json_decode(remote.http.config_file.content)["hlInstanceUrl"] + "/loki/api/v1/push"
+		proxy_url   = argument.proxy_url.value
+		url         = json_decode(remote.http.config_file.content)["hlInstanceUrl"] + "/loki/api/v1/push"
 		max_streams = 5000
 		batch_wait = "5s"
 		batch_size = "5MiB"
