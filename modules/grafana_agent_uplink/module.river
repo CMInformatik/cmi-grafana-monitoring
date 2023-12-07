@@ -56,7 +56,7 @@ module.git "default_drop_lists" {
 	revision   = argument.submodule_branch.value
 }
 
-module.git "default_drop_lists" {
+module.git "lable_keep_white_list" {
   repository = "https://github.com/CMInformatik/cmi-grafana-monitoring.git"
   path       = "modules/grafana_lable_keep_list/module.river"
   revision   = "master"
@@ -137,7 +137,7 @@ loki.process "only_keep_wihitelisted_labels" {
   ]
 
   stage.label_keep  {
-    values = module.git.default_drop_lists.exports.loki_lable_keep_list
+    values = module.git.lable_keep_white_list.exports.loki_lable_keep_list
   }
 }
 
