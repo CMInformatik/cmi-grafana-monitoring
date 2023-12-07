@@ -57,9 +57,9 @@ module.git "default_drop_lists" {
 }
 
 module.git "lable_keep_white_list" {
-  repository = "https://github.com/CMInformatik/cmi-grafana-monitoring.git"
-  path       = "modules/grafana_lable_keep_list/module.river"
-  revision   = argument.submodule_branch.value
+	repository = "https://github.com/CMInformatik/cmi-grafana-monitoring.git"
+	path       = "modules/grafana_lable_keep_list/module.river"
+	revision   = argument.submodule_branch.value
 }
 
 prometheus.relabel "default_drop" {
@@ -132,13 +132,13 @@ loki.process "drop_unwanted_logs" {
 
 // To make sure we don't have unwanted lables that introduce high cardinality, we drop all lables that are not whitelisted
 loki.process "only_keep_wihitelisted_labels" {
-  forward_to = [
-	module.git.grafana_cloud.exports.logs_receiver,
-  ]
+	forward_to = [
+		module.git.grafana_cloud.exports.logs_receiver,
+	]
 
-  stage.label_keep  {
-    values = module.git.lable_keep_white_list.exports.loki_lable_keep_list
-  }
+	stage.label_keep {
+		values = module.git.lable_keep_white_list.exports.loki_lable_keep_list
+	}
 }
 
 prometheus.relabel "add_default_labels" {
