@@ -59,7 +59,7 @@ module.git "default_drop_lists" {
 module.git "lable_keep_white_list" {
   repository = "https://github.com/CMInformatik/cmi-grafana-monitoring.git"
   path       = "modules/grafana_lable_keep_list/module.river"
-  revision   = "master"
+  revision   = argument.submodule_branch.value
 }
 
 prometheus.relabel "default_drop" {
