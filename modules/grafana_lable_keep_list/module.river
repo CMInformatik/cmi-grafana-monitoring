@@ -1,0 +1,10 @@
+export "loki_lable_keep_list" {
+	value = [
+		"instance",
+		"job",
+		"site",
+		"level",
+		"tenant_id",
+		"environment",
+	]
+}
