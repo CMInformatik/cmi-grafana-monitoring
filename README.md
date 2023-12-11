@@ -31,7 +31,7 @@ Wird `ENABLE_OPENTELEMETRY_RECEIVER = true` gesetzt, wird ein OpenTelemetry Rece
 
 | Name                                | default | Pflicht | Beschreibung                                                                                                                                    |
 |-------------------------------------|:--------|---------|-------------------------------------------------------------------------------------------------------------------------------------------------|
-| OPENTELEMETRY_ATTRIBUTE_ENVIRONMENT | -       | Ja      | Setzt das Attribut `environment` in Traces, Logs und Metriken auf den angegebenen Wert, sofern es durch die Quelle nicht bereits gesetzt wurde. |
+| OPENTELEMETRY_ATTRIBUTE_ENVIRONMENT | -       | Nein    | Setzt das Attribut `environment` in Traces, Logs und Metriken auf den angegebenen Wert, sofern es durch die Quelle nicht bereits gesetzt wurde. |
 
 
 ### Azure Auto-Discovery

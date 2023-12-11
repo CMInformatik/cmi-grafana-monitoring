@@ -124,7 +124,6 @@ fi
 # add open telemetry receiver if not disabled
 if [  "$ENABLE_OPENTELEMETRY_RECEIVER" == true ]; then
     echo "Configuring Open Telemetry Receiver..."
-    handle_env_variable "OPENTELEMETRY_ATTRIBUTE_ENVIRONMENT"
     echo "Environment attribute: $OPENTELEMETRY_ATTRIBUTE_ENVIRONMENT"
 
 cat << EOF >> $grafanaAgentConfigPath

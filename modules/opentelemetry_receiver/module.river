@@ -31,21 +31,30 @@ otelcol.processor.transform "set_environment_label" {
 	metric_statements {
 		context    = "datapoint"
 		statements = [
-			format("set(attributes[\"environment\"], \"%s\") where attributes[\"environment\"] == nil", argument.otelcol_attribute_environment.value),
+			format(
+				"set(attributes[\"environment\"], \"%s\") where \"%s\" != nil and attributes[\"environment\"] == nil",
+				argument.otelcol_attribute_environment.value,
+				argument.otelcol_attribute_environment.value),
 		]
 	}
 
 	trace_statements {
 		context    = "resource"
 		statements = [
-			format("set(attributes[\"environment\"], \"%s\") where attributes[\"environment\"] == nil", argument.otelcol_attribute_environment.value),
+			format(
+				"set(attributes[\"environment\"], \"%s\") where \"%s\" != nil and attributes[\"environment\"] == nil", 
+				argument.otelcol_attribute_environment.value,
+				argument.otelcol_attribute_environment.value),
 		]
 	}
 
 	log_statements {
 		context    = "resource"
 		statements = [
-			format("set(attributes[\"environment\"], \"%s\") where attributes[\"environment\"] == nil", argument.otelcol_attribute_environment.value),
+			format(
+				"set(attributes[\"environment\"], \"%s\") where \"%s\" != nil and attributes[\"environment\"] == nil", 
+				argument.otelcol_attribute_environment.value,
+				argument.otelcol_attribute_environment.value),
 		]
 	}
 
