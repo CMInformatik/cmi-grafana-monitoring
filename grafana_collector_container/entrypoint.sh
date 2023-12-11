@@ -33,6 +33,7 @@ handle_env_variable "ENABLE_AZURE_AUTODISCOVERY" false
 handle_env_variable "ENABLE_PUSH_GATEWAY" false
 handle_env_variable "ENABLE_FORWARDERS" false
 handle_env_variable "ENABLE_POSTGRES_MONITORING" false
+# Optional variable: RESOURCE_ATTRIBUTE_ENVIRONMENT
 
 if [ -f "$grafanaAgentConfigPath" ]; then
     # Remove default config file if it exists inside the container
