@@ -47,6 +47,7 @@ echo "AGENT_NAME: $AGENT_NAME"
 echo "STACK_NAME: $STACK_NAME"
 echo "BRANCH_NAME: $BRANCH_NAME"
 echo "LOG_LEVEL: $LOG_LEVEL"
+echo "RESOURCE_ATTRIBUTE_ENVIRONMENT: $RESOURCE_ATTRIBUTE_ENVIRONMENT"
 
 additional_lables_to_drop_string="[]"
 if [ "$ADDITIONAL_LABELS_TO_DROP" != "[]" ]; then
@@ -124,7 +125,6 @@ fi
 # add open telemetry receiver if not disabled
 if [  "$ENABLE_OPENTELEMETRY_RECEIVER" == true ]; then
     echo "Configuring Open Telemetry Receiver..."
-    echo "Environment attribute: $OPENTELEMETRY_ATTRIBUTE_ENVIRONMENT"
 
 cat << EOF >> $grafanaAgentConfigPath
 module.file "otelcol" {
@@ -132,7 +132,7 @@ module.file "otelcol" {
 	arguments {
 		base_module_exports           = module.git.base_module.exports
 		branch                        = "$BRANCH_NAME"
-		otelcol_attribute_environment = "$OPENTELEMETRY_ATTRIBUTE_ENVIRONMENT"
+		otelcol_attribute_environment = "$RESOURCE_ATTRIBUTE_ENVIRONMENT"
 	}
 }
 EOF
