@@ -83,7 +83,8 @@ module.git "base_module" {
 	}
 }
 
-// Adds a new lable to all metrics scraped from the collector agent to be able to separate them from normal agents
+// This step adds a new label to all metrics scraped from the local collector agent.
+// This label is used whenever we need to identify if agent metrics are from a normal agent or a collector agent.
 prometheus.relabel "add_collector_lable" {
   forward_to = [module.git.base_module.exports.metrics_receiver]
   rule {
