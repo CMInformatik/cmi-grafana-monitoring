@@ -30,8 +30,9 @@ module.file "otel_receiver" {
 	filename = "/modules/opentelemetry_receiver/module.river"
 
 	arguments {
-		otelcol_metrics_receiver = prometheus.remote_write.local.receiver
-		otelcol_logs_receiver    = loki.write.local.receiver
-		otelcol_traces_receiver  = otelcol.exporter.otlp.tempo_local.input
+		otelcol_metrics_receiver      = prometheus.remote_write.local.receiver
+		otelcol_logs_receiver         = loki.write.local.receiver
+		otelcol_traces_receiver       = otelcol.exporter.otlp.tempo_local.input
+		otelcol_attribute_environment = "Development"
 	}
 }

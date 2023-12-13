@@ -98,6 +98,7 @@ loki.relabel "add_default_lables" {
 		replacement  = argument.site.value
 	}
 
+	// it's assumed, this is required for the windows integration to work, unsure.
 	rule {
 		source_labels = ["__host__"]
 		target_label  = "agent_hostname"
@@ -143,15 +144,17 @@ loki.process "only_keep_wihitelisted_labels" {
 
 prometheus.relabel "add_default_labels" {
 	rule {
-		source_labels = ["instance"]
-		target_label  = "agent_hostname"
-	}
-
-	rule {
 		target_label = "site"
 		replacement  = argument.site.value
 	}
 
+	// agent_hostname is required by some integrations (at least windows)
+	rule {
+		source_labels = ["instance"]
+		target_label  = "agent_hostname"
+	}
+
+	// replace is required by windows integration
 	rule {
 		source_labels = ["job"]
 		regex         = "integrations/windows"
@@ -159,6 +162,7 @@ prometheus.relabel "add_default_labels" {
 		target_label  = "job"
 		replacement   = "integrations/windows_exporter"
 	}
+
 	forward_to = [
 		module.git.grafana_cloud.exports.metrics_receiver,
 	]

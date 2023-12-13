@@ -1,6 +1,6 @@
 # Grafana Monitoring
 
-Das folgende Projekt enthält alle Resourcen, die im Zusammenhang mit dem Grafana Monitoring stehen.
+Das folgende Projekt enthält alle Ressourcen, die im Zusammenhang mit dem Grafana Monitoring stehen.
 
 ## Azure Collector Container
 
@@ -24,14 +24,15 @@ Der Container lässt sich vollständig per Env-Variablen konfigurieren. Die folg
 | ENABLE_PUSH_GATEWAY           | false        | Nein    | Soll der Push Gateway konfiguriert und gestartet werden? true = Ja, false = Nein.                          |
 | ENABLE_FORWARDERS             | false        | Nein    | Wenn diese Einstellung auf true gesetzt wird, wird der Prometheus und Loki forwarder aktiviert.            |
 | ENABLE_POSTGRES_MONITORING    | false        | Nein    | Wenn diese Einstellung auf true gesetzt wird, wird die Überwachung von Postgres Server aktiviert.          |
+| RESOURCE_ATTRIBUTE_ENVIRONMENT | -       | Nein    | Setzt das Attribut `environment` in Traces, Logs und Metriken auf den angegebenen Wert, sofern es durch die Quelle nicht bereits gesetzt wurde. |
 
 ### OTEL-Collector
 
 Wird `ENABLE_OPENTELEMETRY_RECEIVER = true` gesetzt, wird ein OpenTelemetry Receiver konfiguriert und gestartet. Diese hört auf den Ports 4317 (OTLP-GRPC) und 4318 (OTLP-HTTP). Die Schnittstelle kann genutzt werden, um Metriken, Logs und Traces an den Collector zu senden. Die Daten werden dann verarbeitet (filtering und tagging) und an den konfigurierten Grafana Cloud Stack gesendet.
 
-### Azure Auto-Discorvery
+### Azure Auto-Discovery
 
-Wird `ENABLE_AZURE_AUTODISCOVERY = true` gesetz, sucht der Collector automatisch nach VMs in der angegebenen Azure Subscription und scrapet den Agent und Windows/Linux Metrik-Endpunkt. Für die Integration sind die folgenden Einstellungen notwendig:
+Wird `ENABLE_AZURE_AUTODISCOVERY = true` gesetzt, sucht der Collector automatisch nach VMs in der angegebenen Azure Subscription und scrapet den Agent und Windows/Linux Metrik-Endpunkt. Für die Integration sind die folgenden Einstellungen notwendig:
 
 | Name                  | default | Pflicht | Beschreibung                                        |
 | --------------------- | :------ | ------- | --------------------------------------------------- |
@@ -65,7 +66,7 @@ Mit der Variabel `ADDITIONAL_LABELS_TO_DROP` kann eine Komma getrennte Liste von
 ADDITIONAL_LABELS_TO_DROP="label1,label2,label3"
 ```
 
-### Testen des Collectors
+## Testen des Collectors
 
 Für die Secrets muss im Ordner `grafana_collector_container` ein Secrets file mit dem Namen `local_configuration.env` und folgenden Inhalt angelegt werden:
 
@@ -78,7 +79,7 @@ Um den Collector lokal zu testen, kann dieser anschliessend mit dem folgenden Be
 
 ```bash
 docker build --tag "grafana_collector_local_image:latest" .\grafana_collector_container\
-docker compose -f .\grafana_collector_container\docker-compose.yaml up
+docker compose -f .\grafana_collector_container\docker-compose.yaml up --build
 ```
 
 ## Grafana Agent River Module

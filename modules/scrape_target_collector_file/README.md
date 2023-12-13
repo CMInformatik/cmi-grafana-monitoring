@@ -18,7 +18,7 @@ Das Modul exportiert die folgenden Variablen:
 
 | Name    | Beschreibung                                                                                                                                                                                                                                                               |
 | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| targets | Eine Liste aller Scrape-Targets, die in den verschiedenen Datein spezifiziert wurden. Für alle Windows und Linux Targets wird automatisch ein zusätzliches Target für den Grafana Agent angelegt. Dieser output kann einem prometheus.scrape als targets übergeben werden. |
+| targets | Eine Liste aller Scrape-Targets, die in den verschiedenen Dateien spezifiziert wurden. Für alle Windows und Linux Targets wird automatisch ein zusätzliches Target für den Grafana Agent angelegt. Dieser output kann einem Prometheus.scrape als targets übergeben werden. |
 
 ## Beispiel
 
