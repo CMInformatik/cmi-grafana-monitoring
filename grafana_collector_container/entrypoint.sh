@@ -87,7 +87,7 @@ module.git "base_module" {
 prometheus.relabel "add_collector_lable" {
   forward_to = [module.git.base_module.exports.metrics_receiver]
   rule {
-    target_label  = "collector_agent"
+    target_label  = "CMI_Collector_Agent"
     replacement   = "true"
   }
 }
