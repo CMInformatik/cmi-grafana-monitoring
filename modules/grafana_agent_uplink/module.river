@@ -106,7 +106,7 @@ loki.relabel "add_default_lables" {
 	rule {
 		source_labels = ["environment"]
 		// check if the environment lable is already set, if so, don't overwrite it
-		regex         = "(?!^$)"
+		regex         = "^$"
 		target_label = "environment"
 		replacement  = argument.environment.value 
 	}
