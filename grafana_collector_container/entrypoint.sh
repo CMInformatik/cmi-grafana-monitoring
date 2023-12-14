@@ -80,6 +80,7 @@ module.git "base_module" {
 		stack_name       = "$STACK_NAME"
 		submodule_branch = "$BRANCH_NAME"
         additinal_lables_to_drop = $additional_lables_to_drop_string
+        environment = "$RESOURCE_ATTRIBUTE_ENVIRONMENT"
 	}
 }
 
