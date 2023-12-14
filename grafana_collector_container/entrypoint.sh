@@ -83,11 +83,19 @@ module.git "base_module" {
 	}
 }
 
+// This step adds a new label to all metrics scraped from the local collector agent.
+// This label is used whenever we need to identify if agent metrics are from a normal agent or a collector agent.
+prometheus.relabel "add_collector_lable" {
+  forward_to = [module.git.base_module.exports.metrics_receiver]
+  rule {
+    target_label  = "is_collector_agent"
+    replacement   = "true"
+  }
+}
+
 prometheus.scrape "grafana_agent" {
 	targets    = [{"__address__" = "localhost:12345", "job" = "integrations/agent", "instance" = "$AGENT_NAME"}]
-	forward_to = [
-		module.git.base_module.exports.metrics_receiver,
-	]
+	forward_to = [prometheus.relabel.add_collector_lable.receiver]
 }
 EOF
 
