@@ -103,6 +103,11 @@ loki.relabel "add_default_lables" {
 		replacement  = argument.site.value
 	}
 
+	/* 
+	The environment lable is only set if a: it's not set already and b: the environment argument is provided
+	This works by checking the environment lable for an empty string, which evaluates to true if the lable is not set.
+	Than the target lable is set to the environment input argument, which defaults to an empty string for which labels are automatically dropped.
+	*/
 	rule {
 		source_labels = ["environment"]
 		// check if the environment lable is already set, if so, don't overwrite it
@@ -167,6 +172,11 @@ prometheus.relabel "add_default_labels" {
 		target_label  = "agent_hostname"
 	}
 
+	/* 
+	The environment lable is only set if a: it's not set already and b: the environment argument is provided
+	This works by checking the environment lable for an empty string, which evaluates to true if the lable is not set.
+	Than the target lable is set to the environment input argument, which defaults to an empty string for which labels are automatically dropped.
+	*/
 	rule {
 		source_labels = ["environment"]
 		// check if the environment lable is already set, if so, don't overwrite it
