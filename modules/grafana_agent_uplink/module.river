@@ -21,6 +21,11 @@ argument "proxy_url" {
 	default  = null
 }
 
+argument "environment" {
+	optional = true
+	default  = null
+}
+
 argument "additinal_lables_to_drop" {
 	optional = true
 	default  = []
@@ -98,6 +103,14 @@ loki.relabel "add_default_lables" {
 		replacement  = argument.site.value
 	}
 
+	rule {
+		source_labels = ["environment"]
+		// check if the environment lable is already set, if so, don't overwrite it
+		regex         = "(?!^$)"
+		target_label = "environment"
+		replacement  = argument.environment.value 
+	}
+
 	// it's assumed, this is required for the windows integration to work, unsure.
 	rule {
 		source_labels = ["__host__"]
@@ -152,6 +165,14 @@ prometheus.relabel "add_default_labels" {
 	rule {
 		source_labels = ["instance"]
 		target_label  = "agent_hostname"
+	}
+
+	rule {
+		source_labels = ["environment"]
+		// check if the environment lable is already set, if so, don't overwrite it
+		regex         = "(?!^$)"
+		target_label = "environment"
+		replacement  = argument.environment.value 
 	}
 
 	// replace is required by windows integration
