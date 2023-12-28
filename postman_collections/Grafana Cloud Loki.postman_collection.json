@@ -1,0 +1,252 @@
+{
+	"info": {
+		"_postman_id": "39c5d3d8-7175-4e4a-a99a-65a376f2c349",
+		"name": "Grafana Cloud Loki",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24060817"
+	},
+	"item": [
+		{
+			"name": "loki/api/v1/push",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"streams\":[\r\n      {\r\n         \"stream\":{\r\n            \"job\":\"test_logs\",\r\n            \"level\":\"info\",\r\n            \"application\":\"myApp\",\r\n            \"tenant_id\" : \"jbr\"\r\n         },\r\n         \"values\":[\r\n            [\r\n               \"{{timestampNano}}\",\r\n               \"Log line 1 for testing\"\r\n            ]\r\n         ]\r\n      }\r\n   ]\r\n}"
+				},
+				"url": {
+					"raw": "{{Loki_Url}}/loki/api/v1/push",
+					"host": [
+						"{{Loki_Url}}"
+					],
+					"path": [
+						"loki",
+						"api",
+						"v1",
+						"push"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "loki/api/v1/query_range",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "query",
+							"value": "{tenant_id=\"jbr\"}",
+							"type": "text"
+						},
+						{
+							"key": "start",
+							"value": "1703665884553856300",
+							"type": "text"
+						},
+						{
+							"key": "end",
+							"value": "1703665884563856300",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{Loki_Url}}/loki/api/v1/query_range?query={tenant_id=\"jbr\"}&start={{timestampNanoLastMonth}}&end={{timestampNano}}",
+					"host": [
+						"{{Loki_Url}}"
+					],
+					"path": [
+						"loki",
+						"api",
+						"v1",
+						"query_range"
+					],
+					"query": [
+						{
+							"key": "query",
+							"value": "{tenant_id=\"jbr\"}"
+						},
+						{
+							"key": "start",
+							"value": "{{timestampNanoLastMonth}}"
+						},
+						{
+							"key": "end",
+							"value": "{{timestampNano}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "loki/api/v1/delete",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.variables.set(\"timestampMs\", new Date().getTime());\r",
+							"pm.variables.set(\"timestampS\", new Date().getTime() / 1000);\r",
+							"pm.variables.set(\"timestampNano\", new Date().getTime() / 1000);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Loki_Url}}/loki/api/v1/delete",
+					"host": [
+						"{{Loki_Url}}"
+					],
+					"path": [
+						"loki",
+						"api",
+						"v1",
+						"delete"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "loki/api/v1/delete",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "query",
+							"value": "{system=\"creditcardpayments\"} | regexp \"msg=txn complete; purchase on card (?P<card-number>[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}) accepted\"",
+							"type": "text"
+						},
+						{
+							"key": "start",
+							"value": "<start-time-unixtimestamp>",
+							"type": "text"
+						},
+						{
+							"key": "end",
+							"value": "<end-time-unixtimestamp>",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{Loki_Url}}/loki/api/v1/delete?query={tenant_id=\"jbr\"}&start=1703665884553856300&end=1703665884563856300",
+					"host": [
+						"{{Loki_Url}}"
+					],
+					"path": [
+						"loki",
+						"api",
+						"v1",
+						"delete"
+					],
+					"query": [
+						{
+							"key": "query",
+							"value": "{tenant_id=\"jbr\"}"
+						},
+						{
+							"key": "start",
+							"value": "1703665884553856300"
+						},
+						{
+							"key": "end",
+							"value": "1703665884563856300"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "password",
+				"value": "{{Loki_Token}}",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "{{Loki_User}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"const today = new Date()",
+					"const priorDate = new Date(new Date().setDate(today.getDate() - 30));",
+					"console.log(today);",
+					"console.log(priorDate);",
+					"pm.variables.set(\"timestampMs\", today.getTime());",
+					"pm.variables.set(\"timestampS\", Math.floor(today.getTime() / 1000));",
+					"pm.variables.set(\"timestampNano\", today.getTime() * 1000000);",
+					"pm.variables.set(\"timestampMsLastMonth\"), priorDate.getTime();",
+					"pm.variables.set(\"timestampSLastMonth\", Math.floor(priorDate.getTime() / 1000));",
+					"pm.variables.set(\"timestampNanoLastMonth\", priorDate.getTime()*1000000);",
+					"",
+					"console.log(pm.variables.get(\"timestampS\"));",
+					"console.log(pm.variables.get(\"timestampSLastMonth\"));"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "Loki_Token",
+			"value": "xxx",
+			"type": "string"
+		},
+		{
+			"key": "Loki_User",
+			"value": "xxx",
+			"type": "string"
+		},
+		{
+			"key": "Loki_Url",
+			"value": "https://logs-prod-013.grafana.net",
+			"type": "string"
+		}
+	]
+}
