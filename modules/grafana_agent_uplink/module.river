@@ -134,19 +134,6 @@ loki.process "drop_unwanted_logs" {
 		expression          = "CMI.Server.Fulltext.FulltextIndexQueue.cs*"
 		drop_counter_reason = "Drop fulltext index logs because some servers are generating a lot of logs and we don't need them"
 	}
-
-	// Drop all logs with level or serverity "Verbose"
-	stage.drop {
-		source              = "level"
-		expression          = "VERBOSE|Verbose"
-		drop_counter_reason = "Drop verbose logs"
-	}
-
-	stage.drop {
-		source              = "severity"
-		expression          = "Verbose|VERBOSE"
-		drop_counter_reason = "Drop verbose logs"
-	}
 }
 
 // To make sure we don't have unwanted lables that introduce high cardinality, we drop all lables that are not whitelisted
