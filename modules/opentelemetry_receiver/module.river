@@ -67,10 +67,19 @@ otelcol.processor.transform "set_environment_label" {
 
 otelcol.processor.attributes "set_loki_labels" {
 	// Moves log records attributes to loki lables/fields.
-	// Note: loki.attribute.labels has special meaning, see 
+	// Note: loki.attribute.labels and loki.resource.labels has special meaning, see 
 	// https://grafana.com/docs/agent/latest/flow/reference/components/otelcol.exporter.loki
+	// Action "insert": new attribute if not already exists.
+
+	// First read tenant id from attributes, if not available ...
 	action {
 		key    = "loki.attribute.labels"
+		action = "insert"
+		value  = "tenant_id"
+	}
+	// ... also try to read from the resource attributes.
+	action {
+		key    = "loki.resource.labels"
 		action = "insert"
 		value  = "tenant_id"
 	}
